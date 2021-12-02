@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+    http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd ">
+
+    <!-- TABLES -->
+    <include file="db/changelog/changeset/v0.0.1/db.changelog.manager.xml"/>
+    <include file="db/changelog/changeset/v0.0.1/db.changelog.refresh_token.xml"/>
+    <include file="db/changelog/changeset/v0.0.1/db.changelog.role.xml"/>
+    <include file="db/changelog/changeset/v0.0.1/db.changelog.role_manager.xml"/>
+
+
+</databaseChangeLog>
