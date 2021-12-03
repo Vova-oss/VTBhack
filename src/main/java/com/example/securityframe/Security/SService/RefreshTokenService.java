@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.example.securityframe.Security.SecurityConstants.*;
@@ -32,7 +31,7 @@ public class RefreshTokenService {
 
     /** Создание нового refresh-токена */
     public RefreshToken createRTbyUserLogin(String login){
-        Manager manager = managerService.findByLogin(login);
+        Manager manager = managerService.findByEmail(login);
 
         RefreshToken refreshToken = new RefreshToken();
 
@@ -95,7 +94,7 @@ public class RefreshTokenService {
                 StaticMethods.createResponse(request, response,
                         432,"Refresh token doesn't exist");
                 String login = jwTokenService.decodeJWT(jwToken);
-                Manager manager = managerService.findByLogin(login);
+                Manager manager = managerService.findByEmail(login);
                 if(manager !=null){
                     deleteAllByUser(manager);
                 }

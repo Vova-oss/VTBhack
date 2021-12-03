@@ -13,6 +13,15 @@
                 path="db/changelog/sql/v0.0.1/create-account-table.sql"
                 stripComments="true"/>
     </changeSet>
+
+    <changeSet id="2" author="Vova">
+        <insert tableName="account">
+            <column name="manager_id" value="1"/>
+            <column name="account_number" value="63792925862041630651"/>
+            <column name="current_account" value="2821650"/>
+            <column name="currency" value="RUB"/>
+        </insert>
+    </changeSet>
     
 
 

@@ -43,9 +43,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter implements WebMvcC
                 .and()
                 .csrf().disable().authorizeRequests()
 
-                .antMatchers("/home").permitAll()
-                .antMatchers("/work").hasAuthority("MANAGER")
-
+                .antMatchers("/start/**").hasAuthority("MANAGER")
 
                 .anyRequest().permitAll()
                 .and()
