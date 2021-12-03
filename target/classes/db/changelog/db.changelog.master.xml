@@ -13,6 +13,11 @@
     <include file="db/changelog/changeset/v0.0.1/db.changelog.refresh_token.xml"/>
     <include file="db/changelog/changeset/v0.0.1/db.changelog.role.xml"/>
     <include file="db/changelog/changeset/v0.0.1/db.changelog.role_manager.xml"/>
+    <include file="db/changelog/changeset/v0.0.1/db.changelog.account.xml"/>
+    <include file="db/changelog/changeset/v0.0.1/db.changelog.department.xml"/>
+    <include file="db/changelog/changeset/v0.0.1/db.changelog.worker.xml"/>
+    <include file="db/changelog/changeset/v0.0.1/db.changelog.card.xml"/>
+    <include file="db/changelog/changeset/v0.0.1/db.changelog.transaction.xml"/>
 
 
 </databaseChangeLog>
