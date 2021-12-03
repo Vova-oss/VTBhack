@@ -3,17 +3,21 @@ package com.example.securityframe.Controller;
 import com.example.securityframe.AuxiliaryClasses.StaticMethods;
 import com.example.securityframe.DAO.ManagerDAO;
 import com.example.securityframe.DAO.RoleDAO;
+import com.example.securityframe.Entity.Department;
 import com.example.securityframe.Entity.Worker;
 import com.example.securityframe.ResponseModel.WidgetCurrentAccount;
+import com.example.securityframe.Service.DepartmentService;
 import com.example.securityframe.Service.ManagerService;
 import com.example.securityframe.Service.WorkerService;
 import io.swagger.annotations.*;
+import liquibase.pro.packaged.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RestController
 @Api(tags = "Start")
@@ -24,6 +28,8 @@ public class StartController {
     ManagerService managerService;
     @Autowired
     WorkerService workerService;
+    @Autowired
+    DepartmentService departmentService;
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -53,5 +59,10 @@ public class StartController {
         StaticMethods.createResponse(request, response, 200, "Worker added");
     }
 
+    @ApiOperation(value = "Получение всех отделов")
+    @GetMapping("/getAllDepartments")
+    public List<Department> getAllDepartments(HttpServletRequest request, HttpServletResponse response){
+        return departmentService.findAll();
+    }
 
 }

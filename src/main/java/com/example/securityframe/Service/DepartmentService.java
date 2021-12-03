@@ -5,6 +5,8 @@ import com.example.securityframe.Entity.Department;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DepartmentService {
 
@@ -19,5 +21,9 @@ public class DepartmentService {
 
     public Department findByAccountId(Long account_id){
         return departmentDAO.findByAccountId(account_id);
+    }
+
+    public List<Department> findAll() {
+        return departmentDAO.findAll();
     }
 }

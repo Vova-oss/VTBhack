@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class DepartmentDAO {
@@ -33,6 +35,39 @@ public class DepartmentDAO {
                 department.setName(r.getString("name"));
                 return department;
             }
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public List<Department> findAll() {
+        String sql = "select * from department";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(url, name, pass);
+            ps = con.prepareStatement(sql);
+            ResultSet r = ps.executeQuery();
+            List<Department> list = new ArrayList<>();
+            while (r.next()){
+                Department department = new Department();
+                department.setId(r.getLong("id"));
+                department.setAccount_id(r.getLong("account_id"));
+                department.setName(r.getString("name"));
+                list.add(department);
+            }
+            return list;
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }finally {
