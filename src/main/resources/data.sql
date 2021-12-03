@@ -16,6 +16,7 @@ drop table manager;
 
 
 select * from role;
+select * from worker;
 select * from manager;
 select * from account;
 select * from role_manager;
