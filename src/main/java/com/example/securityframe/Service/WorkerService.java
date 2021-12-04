@@ -20,15 +20,15 @@ import static com.example.securityframe.Security.SecurityConstants.TOKEN_PREFIX;
 public class WorkerService {
 
     @Autowired
-    WorkerDAO workerDAO;
+    private WorkerDAO workerDAO;
     @Autowired
-    DepartmentService departmentService;
+    private DepartmentService departmentService;
     @Autowired
-    JWTokenService jwTokenService;
+    private JWTokenService jwTokenService;
     @Autowired
-    ManagerService managerService;
+    private ManagerService managerService;
     @Autowired
-    AccountService accountService;
+    private AccountService accountService;
 
 
     public void addWorker(Worker worker, HttpServletRequest request, HttpServletResponse response) {
@@ -44,5 +44,9 @@ public class WorkerService {
     public List<Worker> findAllByAccount_id(HttpServletRequest request, HttpServletResponse response) {
         Account account = accountService.findByJwt(request);
         return workerDAO.findAllByAccount_id(account.getId());
+    }
+
+    public void replaceDepartmentId(String id, Long department_id) {
+        workerDAO.replaceDepartmentId(id, department_id);
     }
 }

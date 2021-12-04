@@ -1,7 +1,5 @@
 package com.example.securityframe.DAO;
 
-import com.example.securityframe.Entity.Department;
-import com.example.securityframe.Entity.Manager;
 import com.example.securityframe.Entity.Worker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,11 +12,11 @@ import java.util.List;
 public class WorkerDAO {
 
     @Value("${spring.datasource.url}")
-    String url;
+    String db_url;
     @Value("${spring.datasource.username}")
-    String name;
+    String db_name;
     @Value("${spring.datasource.password}")
-    String pass;
+    String db_pass;
 
     public void addWorker(Worker worker) {
         String sql = "insert into worker(name, surname, patronymic, department_id) VALUES (?, ?, ?, ?)";
@@ -26,7 +24,7 @@ public class WorkerDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            con = DriverManager.getConnection(url, name, pass);
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setString(1, worker.getName());
             ps.setString(2, worker.getSurname());
@@ -56,7 +54,7 @@ public class WorkerDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            con = DriverManager.getConnection(url, name, pass);
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setLong(1, account_id);
             ResultSet r = ps.executeQuery();
@@ -84,5 +82,30 @@ public class WorkerDAO {
             }
         }
         return null;
+    }
+
+    public void replaceDepartmentId(String id, Long department_id) {
+        String sql = "update worker set department_id = ? where id = ?";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, department_id);
+            ps.setLong(2, Long.parseLong(id));
+            ps.execute();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
     }
 }

@@ -8,17 +8,16 @@ import org.springframework.stereotype.Component;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class RefreshTokenDAO {
 
     @Value("${spring.datasource.url}")
-    String url;
+    String db_url;
     @Value("${spring.datasource.username}")
-    String name;
+    String db_name;
     @Value("${spring.datasource.password}")
-    String pass;
+    String db_pass;
 
     public void save(RefreshToken refreshToken) {
         String sql = "insert into refresh_token (manager_id, token, expiry_date) VALUES (?, ?, ?)";
@@ -26,7 +25,7 @@ public class RefreshTokenDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            con = DriverManager.getConnection(url, name, pass);
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setLong(1, refreshToken.getManager_id());
             ps.setString(2, refreshToken.getToken());
@@ -53,7 +52,7 @@ public class RefreshTokenDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            con = DriverManager.getConnection(url, name, pass);
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setString(1, token);
             ResultSet r = ps.executeQuery();
@@ -87,7 +86,7 @@ public class RefreshTokenDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            con = DriverManager.getConnection(url, name, pass);
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setLong(1, refreshToken.getId());
             ps.execute();
@@ -112,7 +111,7 @@ public class RefreshTokenDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            con = DriverManager.getConnection(url, name, pass);
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setLong(1, manager.getId());
             ResultSet r = ps.executeQuery();

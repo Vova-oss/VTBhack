@@ -1,7 +1,6 @@
 package com.example.securityframe.DAO;
 
 import com.example.securityframe.Entity.Account;
-import com.example.securityframe.Entity.Manager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +10,11 @@ import java.sql.*;
 public class AccountDAO {
 
     @Value("${spring.datasource.url}")
-    String url;
+    String db_url;
     @Value("${spring.datasource.username}")
-    String name;
+    String db_name;
     @Value("${spring.datasource.password}")
-    String pass;
+    String db_pass;
 
     public Account findByManagerId(Long id) {
         String sql = "select * from account where manager_id = ?";
@@ -23,7 +22,7 @@ public class AccountDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            con = DriverManager.getConnection(url, name, pass);
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setLong(1, id);
             ResultSet r = ps.executeQuery();

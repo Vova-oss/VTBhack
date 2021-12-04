@@ -10,11 +10,11 @@ import java.sql.*;
 public class ManagerDAO {
 
     @Value("${spring.datasource.url}")
-    String url;
+    String db_url;
     @Value("${spring.datasource.username}")
-    String name;
+    String db_name;
     @Value("${spring.datasource.password}")
-    String pass;
+    String db_pass;
 
 
     public Manager findByEmail(String email){
@@ -23,7 +23,7 @@ public class ManagerDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            con = DriverManager.getConnection(url, name, pass);
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setString(1, email);
             ResultSet r = ps.executeQuery();
@@ -55,7 +55,7 @@ public class ManagerDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            con = DriverManager.getConnection(url, name, pass);
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setLong(1, manager_id);
             ResultSet r = ps.executeQuery();

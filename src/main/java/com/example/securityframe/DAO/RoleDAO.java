@@ -12,11 +12,11 @@ import java.util.List;
 public class RoleDAO {
 
     @Value("${spring.datasource.url}")
-    String url;
+    String db_url;
     @Value("${spring.datasource.username}")
-    String name;
+    String db_name;
     @Value("${spring.datasource.password}")
-    String pass;
+    String db_pass;
 
     public List<Role> findByManagerId(Long id) {
 
@@ -28,7 +28,7 @@ public class RoleDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            con = DriverManager.getConnection(url, name, pass);
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setLong(1, id);
             ResultSet r = ps.executeQuery();

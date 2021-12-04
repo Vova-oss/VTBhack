@@ -11,7 +11,7 @@ drop table department;
 drop table account;
 drop table manager;
 
-
+delete from department where id > 1;
 
 
 
@@ -19,6 +19,7 @@ select * from role;
 select * from worker;
 select * from manager;
 select * from account;
+select * from department;
 select * from role_manager;
 select * from refresh_token;
 
