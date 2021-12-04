@@ -16,7 +16,14 @@ drop table manager;
 
 
 select * from role;
+select * from worker;
 select * from manager;
 select * from account;
 select * from role_manager;
 select * from refresh_token;
+
+
+select worker.*
+    from worker
+    join department d on worker.department_id = d.id
+    where d.account_id = 1

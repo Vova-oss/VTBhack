@@ -1,8 +1,6 @@
 package com.example.securityframe.Controller;
 
 import com.example.securityframe.AuxiliaryClasses.StaticMethods;
-import com.example.securityframe.DAO.ManagerDAO;
-import com.example.securityframe.DAO.RoleDAO;
 import com.example.securityframe.Entity.Department;
 import com.example.securityframe.Entity.Worker;
 import com.example.securityframe.ResponseModel.WidgetCurrentAccount;
@@ -10,7 +8,6 @@ import com.example.securityframe.Service.DepartmentService;
 import com.example.securityframe.Service.ManagerService;
 import com.example.securityframe.Service.WorkerService;
 import io.swagger.annotations.*;
-import liquibase.pro.packaged.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +59,13 @@ public class StartController {
     @ApiOperation(value = "Получение всех отделов")
     @GetMapping("/getAllDepartments")
     public List<Department> getAllDepartments(HttpServletRequest request, HttpServletResponse response){
-        return departmentService.findAll();
+        return departmentService.findAllByAccount_id(request, response);
+    }
+
+    @ApiOperation(value = "Получение всех сотрудников")
+    @GetMapping("/getAllWorkers")
+    public List<Worker> getAllWorkers(HttpServletRequest request, HttpServletResponse response){
+        return workerService.findAllByAccount_id(request, response);
     }
 
 }

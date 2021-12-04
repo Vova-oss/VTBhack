@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.List;
+
 import static com.example.securityframe.Security.SecurityConstants.HEADER_JWT_STRING;
 import static com.example.securityframe.Security.SecurityConstants.TOKEN_PREFIX;
 
@@ -31,11 +33,7 @@ public class WorkerService {
 
     public void addWorker(Worker worker, HttpServletRequest request, HttpServletResponse response) {
         if (worker.getDepartment_id() == -1){
-            String header = request.getHeader(HEADER_JWT_STRING);
-            String token = header.replace(TOKEN_PREFIX, "");
-            String email = jwTokenService.getLoginFromJWT(token);
-            Manager manager = managerService.findByEmail(email);
-            Account account = accountService.findByManagerId(manager.getId());
+            Account account = accountService.findByJwt(request);
             Long individualDepartment_id = departmentService.findIdOfIndividualByAccountId(account.getId());
             worker.setDepartment_id(individualDepartment_id);
         }
@@ -43,4 +41,8 @@ public class WorkerService {
     }
 
 
+    public List<Worker> findAllByAccount_id(HttpServletRequest request, HttpServletResponse response) {
+        Account account = accountService.findByJwt(request);
+        return workerDAO.findAllByAccount_id(account.getId());
+    }
 }

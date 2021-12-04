@@ -50,14 +50,15 @@ public class DepartmentDAO {
         return null;
     }
 
-    public List<Department> findAll() {
-        String sql = "select * from department";
+    public List<Department> findAllByAccount_id(Long account_id) {
+        String sql = "select * from department where account_id = ?";
 
         Connection con = null;
         PreparedStatement ps = null;
         try {
             con = DriverManager.getConnection(url, name, pass);
             ps = con.prepareStatement(sql);
+            ps.setLong(1, account_id);
             ResultSet r = ps.executeQuery();
             List<Department> list = new ArrayList<>();
             while (r.next()){

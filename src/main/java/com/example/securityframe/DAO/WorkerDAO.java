@@ -1,11 +1,14 @@
 package com.example.securityframe.DAO;
 
+import com.example.securityframe.Entity.Department;
 import com.example.securityframe.Entity.Manager;
 import com.example.securityframe.Entity.Worker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class WorkerDAO {
@@ -42,5 +45,44 @@ public class WorkerDAO {
                 throwables.printStackTrace();
             }
         }
+    }
+
+    public List<Worker> findAllByAccount_id(Long account_id) {
+        String sql = "select worker.*\n" +
+                "    from worker\n" +
+                "    join department d on worker.department_id = d.id\n" +
+                "    where d.account_id = ?";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(url, name, pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, account_id);
+            ResultSet r = ps.executeQuery();
+            List<Worker> list = new ArrayList<>();
+            while (r.next()){
+                Worker worker = new Worker();
+                worker.setId(r.getLong("id"));
+                worker.setName(r.getString("name"));
+                worker.setSurname(r.getString("surname"));
+                worker.setPatronymic(r.getString("patronymic"));
+                worker.setDepartment_id(r.getLong("department_id"));
+                list.add(worker);
+            }
+            return list;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
     }
 }
