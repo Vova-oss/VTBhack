@@ -39,6 +39,10 @@ public class StartController {
         return managerService.getInfoAboutWidgetCurrentAccount(request, response);
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "---"),
+            @ApiResponse(code = 201, message = "Created")
+    })
     @ApiOperation(value = "Добавление нового сотрудника")
     @PostMapping("/addWorker")
     public void addWorker(
@@ -54,7 +58,7 @@ public class StartController {
             HttpServletRequest request,
             HttpServletResponse response){
         workerService.addWorker(worker, request, response);
-        StaticMethods.createResponse(request, response, 200, "Worker added");
+        StaticMethods.createResponse(request, response, 201, "Created");
     }
 
     @ApiOperation(value = "Получение всех отделов")
@@ -70,6 +74,12 @@ public class StartController {
     }
 
     @ApiOperation(value = "Добавление отдела")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "---"),
+            @ApiResponse(code = 201, message = "Created"),
+            @ApiResponse(code = 400, message = "Incorrect JSON\n" +
+                    "This name already exists\n")
+    })
     @PostMapping("/addDepartment")
     public void addDepartment(
             @ApiParam(
@@ -86,7 +96,31 @@ public class StartController {
             HttpServletResponse response){
 
         departmentService.addDepartment(body, request, response);
-        StaticMethods.createResponse(request, response, 200, "Department added");
+        StaticMethods.createResponse(request, response, 201, "Created");
+    }
+
+    @ApiOperation(value = "Изменение отдела у сотрудника")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "---"),
+            @ApiResponse(code = 201, message = "Created"),
+            @ApiResponse(code = 400, message = "Incorrect JSON")
+    })
+    @PutMapping("/updateDepartmentOfWorker")
+    public void updateDepartmentOfWorker(
+            @ApiParam(
+                    name = "Department",
+                    value = "id - :id сотрудника, которого хотем перевести в другой отдел\ndepartment_id - :id отдела" +
+                            "куда будет переведён сотрудник",
+                    example = "{\n" +"    \"id\":\"1\",\n" +"    \"department_id\":\"4\"\n" +"}",
+                    required = true
+            )
+            @RequestBody String body,
+            HttpServletRequest request,
+            HttpServletResponse response
+            ){
+
+        workerService.updateDepartmentOfWorker(body,request, response);
+        StaticMethods.createResponse(request, response, 201, "Created");
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.securityframe.Service;
 
+import com.example.securityframe.AuxiliaryClasses.StaticMethods;
 import com.example.securityframe.DAO.WorkerDAO;
 import com.example.securityframe.Entity.Account;
 import com.example.securityframe.Entity.Manager;
@@ -48,5 +49,14 @@ public class WorkerService {
 
     public void replaceDepartmentId(String id, Long department_id) {
         workerDAO.replaceDepartmentId(id, department_id);
+    }
+
+    public void updateDepartmentOfWorker(String body, HttpServletRequest request, HttpServletResponse response) {
+        String id = StaticMethods.parsingJson(body, "id", request, response);
+        String department_id = StaticMethods.parsingJson(body, "department_id", request, response);
+        if(id == null || department_id == null)
+            return;
+
+        replaceDepartmentId(id, Long.valueOf(department_id));
     }
 }

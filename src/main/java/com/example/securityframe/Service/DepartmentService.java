@@ -62,6 +62,9 @@ public class DepartmentService {
 
     public void addDepartment(String body, HttpServletRequest request, HttpServletResponse response) {
         String name = StaticMethods.parsingJson(body, "name", request, response);
+        if(name == null)
+            return;
+
         Account account = accountService.findByJwt(request);
         if(existenceOfName(name, account.getId())){
             StaticMethods.createResponse(request, response, 400, "This name already exists");
