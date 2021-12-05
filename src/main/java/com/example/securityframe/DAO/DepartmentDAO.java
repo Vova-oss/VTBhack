@@ -169,4 +169,36 @@ public class DepartmentDAO {
         }
         return null;
     }
+
+    public Department findById(Long department_id) {
+        String sql = "select * from department where id = ? ";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, dp_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, department_id);
+            ResultSet r = ps.executeQuery();
+            if (r.next()){
+                Department department = new Department();
+                department.setId(r.getLong("id"));
+                department.setName(r.getString("name"));
+                department.setAccount_id(r.getLong("account_id"));
+                return department;
+            }
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+    }
 }

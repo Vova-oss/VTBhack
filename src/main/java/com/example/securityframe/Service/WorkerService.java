@@ -2,10 +2,10 @@ package com.example.securityframe.Service;
 
 import com.example.securityframe.AuxiliaryClasses.StaticMethods;
 import com.example.securityframe.DAO.WorkerDAO;
-import com.example.securityframe.Entity.Account;
-import com.example.securityframe.Entity.Manager;
-import com.example.securityframe.Entity.Worker;
+import com.example.securityframe.Entity.*;
+import com.example.securityframe.ResponseModel.WorkerInfo;
 import com.example.securityframe.Security.SService.JWTokenService;
+import liquibase.pro.packaged.W;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +25,7 @@ public class WorkerService {
     @Autowired
     private DepartmentService departmentService;
     @Autowired
-    private JWTokenService jwTokenService;
-    @Autowired
-    private ManagerService managerService;
+    private CardService cardService;
     @Autowired
     private AccountService accountService;
 
@@ -66,5 +64,18 @@ public class WorkerService {
 
     public List<Worker> findAllByDepartmentId(Long department_id) {
         return workerDAO.findAllByDepartmentId(department_id);
+    }
+
+    public WorkerInfo getWorkerInfo(Long worker_id) {
+        Worker worker = workerDAO.findById(String.valueOf(worker_id));
+        Department department = departmentService.findById(worker.getDepartment_id());
+        Long account = cardService.findAccountByWorkerId(worker_id);
+        WorkerInfo workerInfo = new WorkerInfo();
+        workerInfo.setName(worker.getName());
+        workerInfo.setSurname(worker.getSurname());
+        workerInfo.setPatronymic(worker.getPatronymic());
+        workerInfo.setDepartmentType(department.getName());
+        workerInfo.setAccount(account);
+        return workerInfo;
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.example.securityframe.AuxiliaryClasses.StaticMethods.parsingJson;
@@ -115,10 +116,17 @@ public class DepartmentService {
                 workerDTOS.add(workerDTO);
             }
 
+            workerDTOS.sort(Comparator.comparing(o -> (o.getSurname() + " " + o.getName() + " " + o.getPatronymic())));
+
             DepartmentDTO departmentDTO = DepartmentDTO.createDepartmentDTO(department, workerDTOS, amountOfCards);
             departmentDTOS.add(departmentDTO);
         }
 
+        departmentDTOS.sort(Comparator.comparing(DepartmentDTO::getName));
         return departmentDTOS;
+    }
+
+    public Department findById(Long department_id) {
+        return departmentDAO.findById(department_id);
     }
 }

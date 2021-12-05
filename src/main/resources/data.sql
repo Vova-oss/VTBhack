@@ -29,3 +29,7 @@ select worker.*
     from worker
     join department d on worker.department_id = d.id
     where d.account_id = 1
+
+select sum(account)
+from card
+where worker_id = 3

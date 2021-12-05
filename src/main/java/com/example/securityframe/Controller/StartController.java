@@ -1,6 +1,7 @@
 package com.example.securityframe.Controller;
 
 import com.example.securityframe.AuxiliaryClasses.StaticMethods;
+import com.example.securityframe.Entity.Card;
 import com.example.securityframe.Entity.Department;
 import com.example.securityframe.Entity.Worker;
 import com.example.securityframe.ResponseModel.DepartmentsWorkersCards.DepartmentDTO;
@@ -111,7 +112,7 @@ public class StartController {
     @PutMapping("/updateDepartmentOfWorker")
     public void updateDepartmentOfWorker(
             @ApiParam(
-                    name = "Department",
+                    name = "IdWorker and IdDepartment",
                     value = "id - :id сотрудника, которого хотем перевести в другой отдел\ndepartment_id - :id отдела" +
                             "куда будет переведён сотрудник",
                     example = "{\n" +"    \"id\":\"1\",\n" +"    \"department_id\":\"4\"\n" +"}",
@@ -134,6 +135,14 @@ public class StartController {
     })
     @PostMapping("/addCard")
     public void addCard(
+            @ApiParam(
+                    name = "Department",
+                    value = "id_worker - :id сотрудника, на которого хотим оформить карту\ntype - тип карты\n" +
+                            "purpose_of_creation - цель создания карты",
+                    example = "{\n" +"    \"id_worker\":\"1\",\n" +"    \"type\":\"Транспорт\"\n"+
+                            "    \"purpose_of_creation\":\"Поездка в метро\"\n" +"}",
+                    required = true
+            )
             @RequestBody String body,
             HttpServletRequest request,
             HttpServletResponse response){

@@ -120,4 +120,34 @@ public class CardDAO {
         }
         return null;
     }
+
+    public Long findAccountByWorkerId(Long worker_id) {
+        String sql = "select sum(account)\n" +
+                "from card\n" +
+                "where worker_id = ?";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, worker_id);
+            ResultSet r = ps.executeQuery();
+            if (r.next()){
+                return r.getLong("sum");
+            }
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+    }
 }

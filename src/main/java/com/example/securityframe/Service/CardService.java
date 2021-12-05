@@ -14,10 +14,10 @@ import java.util.List;
 public class CardService {
 
     @Autowired
-    CardDAO cardDAO;
+    private CardDAO cardDAO;
 
     @Autowired
-    WorkerService workerService;
+    private WorkerService workerService;
 
     public void addCard(String body, HttpServletRequest request, HttpServletResponse response) {
         String id_worker = StaticMethods.parsingJson(body, "id_worker", request, response);
@@ -50,5 +50,10 @@ public class CardService {
 
     public List<Card> findAllByWorkerId(Long worker_id) {
         return cardDAO.findAllByWorkerId(worker_id);
+    }
+
+
+    public Long findAccountByWorkerId(Long worker_id) {
+        return cardDAO.findAccountByWorkerId(worker_id);
     }
 }
