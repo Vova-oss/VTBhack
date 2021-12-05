@@ -59,4 +59,8 @@ public class WorkerService {
 
         replaceDepartmentId(id, Long.valueOf(department_id));
     }
+
+    public Worker findById(String id_worker) {
+        return workerDAO.findById(id_worker);
+    }
 }

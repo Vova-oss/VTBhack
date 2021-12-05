@@ -11,18 +11,19 @@ drop table department;
 drop table account;
 drop table manager;
 
+delete from card where id > 0;
 delete from department where id > 1;
 
 
 
 select * from role;
+select * from card;
 select * from worker;
 select * from manager;
 select * from account;
 select * from department;
 select * from role_manager;
 select * from refresh_token;
-
 
 select worker.*
     from worker

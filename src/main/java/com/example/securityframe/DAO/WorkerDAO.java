@@ -108,4 +108,38 @@ public class WorkerDAO {
             }
         }
     }
+
+    public Worker findById(String id_worker) {
+        String sql = "select * from worker where id = ?";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, Long.parseLong(id_worker));
+            ResultSet r = ps.executeQuery();
+            if (r.next()){
+                Worker worker = new Worker();
+                worker.setId(r.getLong("id"));
+                worker.setName(r.getString("name"));
+                worker.setSurname(r.getString("surname"));
+                worker.setPatronymic(r.getString("patronymic"));
+                worker.setDepartment_id(r.getLong("department_id"));
+                return worker;
+            }
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+    }
 }

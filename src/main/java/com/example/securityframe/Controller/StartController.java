@@ -4,6 +4,7 @@ import com.example.securityframe.AuxiliaryClasses.StaticMethods;
 import com.example.securityframe.Entity.Department;
 import com.example.securityframe.Entity.Worker;
 import com.example.securityframe.ResponseModel.WidgetCurrentAccount;
+import com.example.securityframe.Service.CardService;
 import com.example.securityframe.Service.DepartmentService;
 import com.example.securityframe.Service.ManagerService;
 import com.example.securityframe.Service.WorkerService;
@@ -28,6 +29,8 @@ public class StartController {
     WorkerService workerService;
     @Autowired
     DepartmentService departmentService;
+    @Autowired
+    CardService cardService;
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -120,6 +123,21 @@ public class StartController {
             ){
 
         workerService.updateDepartmentOfWorker(body,request, response);
+        StaticMethods.createResponse(request, response, 201, "Created");
+    }
+
+    @ApiOperation(value = "Добавление карты")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "---"),
+            @ApiResponse(code = 201, message = "Created"),
+            @ApiResponse(code = 400, message = "Incorrect JSON")
+    })
+    @PostMapping("/addCard")
+    public void addCard(
+            @RequestBody String body,
+            HttpServletRequest request,
+            HttpServletResponse response){
+        cardService.addCard(body, request, response);
         StaticMethods.createResponse(request, response, 201, "Created");
     }
 
