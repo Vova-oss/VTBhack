@@ -1,10 +1,13 @@
 package com.example.securityframe.DAO;
 
 import com.example.securityframe.Entity.Card;
+import com.example.securityframe.Entity.Worker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class CardDAO {
@@ -73,5 +76,48 @@ public class CardDAO {
                 throwables.printStackTrace();
             }
         }
+    }
+
+    public List<Card> findAllByWorkerId(Long worker_id) {
+        String sql = "select * from card where worker_id = ?";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, worker_id);
+            ResultSet r = ps.executeQuery();
+            List<Card> list = new ArrayList<>();
+            while (r.next()){
+                Card card = new Card();
+                card.setId(r.getLong("id"));
+                card.setWorker_id(worker_id);
+                card.setPayment_system(r.getString("payment_system"));
+                card.setCard_number(r.getString("card_number"));
+                card.setAccount(r.getLong("account"));
+                card.setType(r.getString("type"));
+                card.setPurpose_of_creation(r.getString("purpose_of_creation"));
+                card.setStatus(r.getString("status"));
+                card.setLimit(r.getLong("limit"));
+                card.setLimit_beginning(r.getLong("limit_beginning"));
+                card.setDuration(r.getString("duration"));
+                card.setCurrency(r.getString("currency"));
+                list.add(card);
+            }
+            return list;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
     }
 }

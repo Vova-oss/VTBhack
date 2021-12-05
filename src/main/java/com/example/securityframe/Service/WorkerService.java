@@ -63,4 +63,8 @@ public class WorkerService {
     public Worker findById(String id_worker) {
         return workerDAO.findById(id_worker);
     }
+
+    public List<Worker> findAllByDepartmentId(Long department_id) {
+        return workerDAO.findAllByDepartmentId(department_id);
+    }
 }

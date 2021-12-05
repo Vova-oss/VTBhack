@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Service
 public class CardService {
@@ -45,5 +46,9 @@ public class CardService {
         card.setStatus("ACTIVE");
         card.setCurrency("RUB");
         cardDAO.add(card);
+    }
+
+    public List<Card> findAllByWorkerId(Long worker_id) {
+        return cardDAO.findAllByWorkerId(worker_id);
     }
 }

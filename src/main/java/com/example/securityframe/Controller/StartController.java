@@ -3,13 +3,13 @@ package com.example.securityframe.Controller;
 import com.example.securityframe.AuxiliaryClasses.StaticMethods;
 import com.example.securityframe.Entity.Department;
 import com.example.securityframe.Entity.Worker;
+import com.example.securityframe.ResponseModel.DepartmentsWorkersCards.DepartmentDTO;
 import com.example.securityframe.ResponseModel.WidgetCurrentAccount;
 import com.example.securityframe.Service.CardService;
 import com.example.securityframe.Service.DepartmentService;
 import com.example.securityframe.Service.ManagerService;
 import com.example.securityframe.Service.WorkerService;
 import io.swagger.annotations.*;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -139,6 +139,12 @@ public class StartController {
             HttpServletResponse response){
         cardService.addCard(body, request, response);
         StaticMethods.createResponse(request, response, 201, "Created");
+    }
+
+    @ApiOperation(value = "Получение отделов, сотрудников и карт")
+    @GetMapping("/getDepartmentsWorkersCards")
+    public List<DepartmentDTO> getDepartmentsWorkersCards(HttpServletRequest request, HttpServletResponse response){
+        return departmentService.getDepartmentsWorkersCards(request, response);
     }
 
 }
