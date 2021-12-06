@@ -36,4 +36,8 @@ public class AccountService {
         Manager manager = managerService.findByEmail(email);
         return accountService.findByManagerId(manager.getId());
     }
+
+    public boolean withdrawalOfFunds(Long account_id, Long amount) {
+        return accountDAO.withdrawalOfFunds(account_id, amount);
+    }
 }

@@ -150,4 +150,75 @@ public class CardDAO {
         }
         return null;
     }
+
+    /**
+     * Пополнение счёта карты
+     * @param card_id - :id карты
+     * @param amount - сумма, на которую хотим пополнить
+     */
+    public void topUpAccount(Long card_id, Long amount) {
+        String sql = "update card set account = account ? where id = ?";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, amount);
+            ps.setLong(2, card_id);
+            ps.execute();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+    }
+
+    public Card findById(Long card_id) {
+        String sql = "select * from card where id = ?";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, card_id);
+            ResultSet r = ps.executeQuery();
+            if (r.next()){
+                Card card = new Card();
+                card.setId(card_id);
+                card.setWorker_id(r.getLong("worker_id"));
+                card.setPayment_system(r.getString("payment_system"));
+                card.setCard_number(r.getString("card_number"));
+                card.setAccount(r.getLong("account"));
+                card.setType(r.getString("type"));
+                card.setPurpose_of_creation(r.getString("purpose_of_creation"));
+                card.setStatus(r.getString("status"));
+                card.setLimit(r.getLong("limit"));
+                card.setLimit_beginning(r.getLong("limit_beginning"));
+                card.setDuration(r.getString("duration"));
+                card.setCurrency(r.getString("currency"));
+                return card;
+            }
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+    }
 }

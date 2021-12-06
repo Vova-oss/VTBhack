@@ -52,4 +52,31 @@ public class AccountDAO {
         }
         return null;
     }
+
+    public boolean withdrawalOfFunds(Long account_id, Long amount) {
+        String sql = "update account set current_account = current_account - ? where id = ?;";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, amount);
+            ps.setLong(2, account_id);
+            ps.execute();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+            return false;
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return true;
+    }
 }

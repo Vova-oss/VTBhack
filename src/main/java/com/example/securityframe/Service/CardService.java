@@ -2,6 +2,7 @@ package com.example.securityframe.Service;
 
 import com.example.securityframe.AuxiliaryClasses.StaticMethods;
 import com.example.securityframe.DAO.CardDAO;
+import com.example.securityframe.Entity.Account;
 import com.example.securityframe.Entity.Card;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ public class CardService {
 
     @Autowired
     private WorkerService workerService;
+    @Autowired
+    private AccountService accountService;
 
     public void addCard(String body, HttpServletRequest request, HttpServletResponse response) {
         String id_worker = StaticMethods.parsingJson(body, "id_worker", request, response);
@@ -55,5 +58,22 @@ public class CardService {
 
     public Long findAccountByWorkerId(Long worker_id) {
         return cardDAO.findAccountByWorkerId(worker_id);
+    }
+
+    public void transferToCard(Long card_id, Long amount, HttpServletRequest request, HttpServletResponse response) {
+        Account account = accountService.findByJwt(request);
+        if(account.getCurrent_account() < amount) {
+            StaticMethods.createResponse(request, response, 400, "Insufficient funds");
+            return;
+        }
+
+        if(cardDAO.findById(card_id) == null){
+            StaticMethods.createResponse(request, response, 400, "Card with this :id doesn't exists");
+            return;
+        }
+
+        if(accountService.withdrawalOfFunds(account.getId(), amount)){
+            cardDAO.topUpAccount(card_id, amount);
+        }
     }
 }

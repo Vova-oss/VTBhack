@@ -78,4 +78,5 @@ public class WorkerService {
         workerInfo.setAccount(account);
         return workerInfo;
     }
+
 }
