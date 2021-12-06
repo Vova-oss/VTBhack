@@ -6,9 +6,7 @@ import com.example.securityframe.ResponseModel.WorkerInfo;
 import com.example.securityframe.Service.CardService;
 import com.example.securityframe.Service.WorkerService;
 import io.swagger.annotations.*;
-import liquibase.pro.packaged.S;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -120,6 +118,19 @@ public class WorkerController {
             HttpServletRequest request,
             HttpServletResponse response){
         cardService.lockUnlockCard(card_id, request, response);
+        StaticMethods.createResponse(request, response, 201, "Created");
+    }
+
+    @ApiOperation(value = "Установка финансового лимита на карту")
+    @PutMapping("/setLimitOnCard")
+    public void setLimitOnCard(
+            @RequestParam("card_id") String card_id,
+            @RequestParam("limit") Long limit,
+            @RequestParam("term") Long term,
+            @RequestParam("autoUpdate") Boolean autoUpdate,
+            HttpServletRequest request,
+            HttpServletResponse response){
+        cardService.setLimitOnCard(card_id, limit, term, autoUpdate);
         StaticMethods.createResponse(request, response, 201, "Created");
     }
 

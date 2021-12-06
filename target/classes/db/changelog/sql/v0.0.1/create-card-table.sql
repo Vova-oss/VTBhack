@@ -9,8 +9,9 @@ create table card (
     purpose_of_creation varchar(255),
     status varchar(100),
     "limit" bigint,
-    limit_beginning bigint,
-    duration varchar(255),
+    term bigint,
+    remains bigint,
+    auto_update bool,
     currency varchar(10),
 
     primary key (id),

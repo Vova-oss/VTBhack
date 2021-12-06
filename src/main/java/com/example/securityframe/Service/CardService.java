@@ -107,4 +107,10 @@ public class CardService {
                 break;
         }
     }
+
+    public void setLimitOnCard(String card_id, Long limit, Long term, Boolean autoUpdate) {
+
+
+
+    }
 }

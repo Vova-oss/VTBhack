@@ -17,6 +17,7 @@
     <include file="db/changelog/changeset/v0.0.1/db.changelog.department.xml"/>
     <include file="db/changelog/changeset/v0.0.1/db.changelog.worker.xml"/>
     <include file="db/changelog/changeset/v0.0.1/db.changelog.card.xml"/>
+    <include file="db/changelog/changeset/v0.0.1/db.changelog.limit_history.xml"/>
     <include file="db/changelog/changeset/v0.0.1/db.changelog.transaction.xml"/>
 
 

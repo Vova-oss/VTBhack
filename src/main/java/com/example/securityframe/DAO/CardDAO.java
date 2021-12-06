@@ -100,8 +100,9 @@ public class CardDAO {
                 card.setPurpose_of_creation(r.getString("purpose_of_creation"));
                 card.setStatus(r.getString("status"));
                 card.setLimit(r.getLong("limit"));
-                card.setLimit_beginning(r.getLong("limit_beginning"));
-                card.setDuration(r.getString("duration"));
+                card.setTerm(r.getLong("term"));
+                card.setRemains(r.getLong("remains"));
+                card.setAutoUpdate(r.getBoolean("auto_update"));
                 card.setCurrency(r.getString("currency"));
                 list.add(card);
             }
@@ -202,8 +203,9 @@ public class CardDAO {
                 card.setPurpose_of_creation(r.getString("purpose_of_creation"));
                 card.setStatus(r.getString("status"));
                 card.setLimit(r.getLong("limit"));
-                card.setLimit_beginning(r.getLong("limit_beginning"));
-                card.setDuration(r.getString("duration"));
+                card.setTerm(r.getLong("term"));
+                card.setRemains(r.getLong("remains"));
+                card.setAutoUpdate(r.getBoolean("auto_update"));
                 card.setCurrency(r.getString("currency"));
                 return card;
             }
