@@ -88,4 +88,23 @@ public class CardService {
         transaction.setValue(amount);
         transactionService.createTransaction(transaction);
     }
+
+    public void perpetualCardBlocking(Long card_id) {
+        cardDAO.changeStatusOfCard(card_id, "BLOCKING");
+    }
+
+    public void lockUnlockCard(Long card_id, HttpServletRequest request, HttpServletResponse response) {
+        Card card = cardDAO.findById(card_id);
+        switch (card.getStatus()) {
+            case "ACTIVE":
+                cardDAO.changeStatusOfCard(card_id, "TEMPORARY BLOCKING");
+                break;
+            case "TEMPORARY BLOCKING":
+                cardDAO.changeStatusOfCard(card_id, "ACTIVE");
+                break;
+            case "BLOCKING":
+                StaticMethods.createResponse(request, response, 400, "The card is blocked forever. You can't unlock it");
+                break;
+        }
+    }
 }

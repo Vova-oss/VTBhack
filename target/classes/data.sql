@@ -22,6 +22,7 @@ select * from worker;
 select * from manager;
 select * from account;
 select * from department;
+select * from transaction;
 select * from role_manager;
 select * from refresh_token;
 
@@ -36,5 +37,3 @@ where worker_id = 3;
 
 update account set current_account = 2821650 where id = 1;
 select * from account;
-
-select * from transaction

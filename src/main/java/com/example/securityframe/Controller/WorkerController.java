@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -35,7 +36,9 @@ public class WorkerController {
                     required = true
             )
             @RequestParam("worker_id") Long worker_id){
-        return cardService.findAllByWorkerId(worker_id);
+        List<Card> cards = cardService.findAllByWorkerId(worker_id);
+        cards.sort(Comparator.comparing(Card::getCard_number));
+        return cards;
     }
 
     @ApiOperation(value = "Получение данных о сотруднике")
@@ -79,6 +82,45 @@ public class WorkerController {
         StaticMethods.createResponse(request, response, 201, "Created");
     }
 
+    @ApiOperation(value = "Вечная блокировка карты")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "---"),
+            @ApiResponse(code = 201, message = "Created")
+    })
+    @PutMapping("/perpetualCardBlocking")
+    public void perpetualCardBlocking(
+            @ApiParam(
+                    name = "card_id",
+                    value = "card_id - :id карты, на которую хотим заблокировать",
+                    example = "1",
+                    required = true
+            )
+            @RequestParam("card_id") Long card_id,
+            HttpServletRequest request,
+            HttpServletResponse response){
+        cardService.perpetualCardBlocking(card_id);
+        StaticMethods.createResponse(request, response, 201, "Created");
+    }
 
+    @ApiOperation(value = "Временная блокировка/разблокировка карты")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "---"),
+            @ApiResponse(code = 201, message = "Created"),
+            @ApiResponse(code = 400, message = "Incorrect JSON\nThe card is blocked forever. You can't unlock it")
+    })
+    @PutMapping("/lockUnlockCard")
+    public void lockUnlockCard(
+            @ApiParam(
+                    name = "card_id",
+                    value = "card_id - :id карты, на которую хотим заблокировать/разблокировать",
+                    example = "1",
+                    required = true
+            )
+            @RequestParam("card_id") Long card_id,
+            HttpServletRequest request,
+            HttpServletResponse response){
+        cardService.lockUnlockCard(card_id, request, response);
+        StaticMethods.createResponse(request, response, 201, "Created");
+    }
 
 }

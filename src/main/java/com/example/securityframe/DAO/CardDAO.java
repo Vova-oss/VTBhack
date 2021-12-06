@@ -221,4 +221,34 @@ public class CardDAO {
         }
         return null;
     }
+
+    /**
+     * Вечная блокировка карты
+     * @param card_id = :id карты, которую желаем заблокировать
+     */
+    public void changeStatusOfCard(Long card_id, String status) {
+        String sql = "update card set status = ? where id = ?";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setString(1, status);
+            ps.setLong(2, card_id);
+            ps.execute();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+    }
+
 }
