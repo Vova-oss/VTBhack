@@ -124,7 +124,7 @@ public class WorkerController {
     @ApiOperation(value = "Установка финансового лимита на карту")
     @PutMapping("/setLimitOnCard")
     public void setLimitOnCard(
-            @RequestParam("card_id") String card_id,
+            @RequestParam("card_id") Long card_id,
             @RequestParam("limit") Long limit,
             @RequestParam("term") Long term,
             @RequestParam("autoUpdate") Boolean autoUpdate,

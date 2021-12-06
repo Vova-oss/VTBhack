@@ -5,6 +5,7 @@ drop table refresh_token;
 drop table role_manager;
 drop table role;
 drop table transaction;
+drop table limit_history;
 drop table card;
 drop table worker;
 drop table department;

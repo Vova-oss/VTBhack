@@ -24,6 +24,8 @@ public class CardService {
     private AccountService accountService;
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private LimitHistoryService limitHistoryService;
 
     public void addCard(String body, HttpServletRequest request, HttpServletResponse response) {
         String id_worker = StaticMethods.parsingJson(body, "id_worker", request, response);
@@ -108,9 +110,17 @@ public class CardService {
         }
     }
 
-    public void setLimitOnCard(String card_id, Long limit, Long term, Boolean autoUpdate) {
+    public void setLimitOnCard(Long card_id, Long limit, Long term, Boolean autoUpdate) {
+
+        cardDAO.updateLimitById(card_id, limit, term, autoUpdate);
+        if(autoUpdate)
+            limitHistoryService.createLimitHistory(card_id, limit, term);
 
 
 
+    }
+
+    public List<Card> findAll() {
+        return cardDAO.findAll();
     }
 }

@@ -1,36 +1,40 @@
-package com.example.securityframe.DAO;
+package com.example.securityframe.Scheduled;
 
-import com.example.securityframe.Entity.LimitHistory;
+import com.example.securityframe.Entity.Card;
+import com.example.securityframe.Service.CardService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
-public class LimitHistoryDAO {
+public class ReductionOfTheTerm {
 
     @Value("${spring.datasource.url}")
-    String db_url;
+    private String db_url;
     @Value("${spring.datasource.username}")
-    String db_name;
+    private String db_name;
     @Value("${spring.datasource.password}")
-    String db_pass;
+    private String db_pass;
 
+    @Scheduled(cron = "*/10 * * * * *")
+    public void reductionOfTheTerm(){
+        decrementTerm();
+        autoUpdateOfLimit();
+    }
 
-    public void add(LimitHistory limitHistory) {
-        String sql = "insert into limit_history (card_id, \"limit\", term) values (?, ?, ?)";
+    private void decrementTerm() {
+        String sql = "update card set term = term -1 where term > 0";
 
         Connection con = null;
         PreparedStatement ps = null;
         try {
             con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
-            ps.setLong(1, limitHistory.getCard_id());
-            ps.setLong(2, limitHistory.getLimit());
-            ps.setLong(3, limitHistory.getTerm());
             ps.execute();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -46,15 +50,19 @@ public class LimitHistoryDAO {
         }
     }
 
-    public void deleteByCardId(Long card_id) {
-        String sql = "delete from limit_history where card_id = ?";
+    private void autoUpdateOfLimit(){
+        String sql = "update card " +
+                "set " +
+                    "term = (select limit_history.term from limit_history where card_id = card.id), " +
+                    "remains = (select limit_history.\"limit\" from limit_history where card_id = card.id), " +
+                    "\"limit\" = (select limit_history.\"limit\" from limit_history where card_id = card.id) " +
+                "where term = 0 and auto_update = true";
 
         Connection con = null;
         PreparedStatement ps = null;
         try {
             con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
-            ps.setLong(1, card_id);
             ps.execute();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -69,4 +77,5 @@ public class LimitHistoryDAO {
             }
         }
     }
+
 }

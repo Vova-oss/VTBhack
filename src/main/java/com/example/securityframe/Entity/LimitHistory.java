@@ -20,10 +20,4 @@ public class LimitHistory {
     @ApiModelProperty(notes = "Срок, на который ограничиваются расходы (в днях)", name = "term", example = "20")
     private Long term;
 
-    @ApiModelProperty(notes = "Остаток, который можно потратить", name = "remains", example = "12740")
-    private Long remains;
-
-    @ApiModelProperty(notes = "Автообновление по истичению :limit", name = "autoUpdate", example = "true")
-    private Boolean autoUpdate;
-
 }

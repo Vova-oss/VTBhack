@@ -5,6 +5,7 @@ drop table refresh_token;
 drop table role_manager;
 drop table role;
 drop table transaction;
+drop table limit_history;
 drop table card;
 drop table worker;
 drop table department;
@@ -37,3 +38,5 @@ where worker_id = 3;
 
 update account set current_account = 2821650 where id = 1;
 select * from account;
+
+update card set remains = 200 where id = 1;
