@@ -4,6 +4,7 @@ import com.example.securityframe.AuxiliaryClasses.StaticMethods;
 import com.example.securityframe.DAO.CardDAO;
 import com.example.securityframe.Entity.Account;
 import com.example.securityframe.Entity.Card;
+import com.example.securityframe.Entity.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ public class CardService {
     private WorkerService workerService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private TransactionService transactionService;
 
     public void addCard(String body, HttpServletRequest request, HttpServletResponse response) {
         String id_worker = StaticMethods.parsingJson(body, "id_worker", request, response);
@@ -40,7 +43,7 @@ public class CardService {
         long v;
         do {
             v = (long) (Math.random() * 1_0000_0000_0000_0000L);
-        } while (cardDAO.cardNumberExists(String.valueOf(v)));
+        } while (cardDAO.cardNumberExists(String.valueOf(v)) || v < 1_000_000_000_000_000L);
         card.setCard_number(String.valueOf(v).substring(0, 16));
 
         card.setAccount(0L);
@@ -73,7 +76,16 @@ public class CardService {
         }
 
         if(accountService.withdrawalOfFunds(account.getId(), amount)){
-            cardDAO.topUpAccount(card_id, amount);
+            this.topUpAccount(card_id, amount);
         }
+    }
+
+    private void topUpAccount(Long card_id, Long amount) {
+        cardDAO.topUpAccount(card_id, amount);
+        Transaction transaction = new Transaction();
+        transaction.setCard_id(card_id);
+        transaction.setCategory("Переводы");
+        transaction.setValue(amount);
+        transactionService.createTransaction(transaction);
     }
 }

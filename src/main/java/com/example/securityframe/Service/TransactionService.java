@@ -1,6 +1,7 @@
 package com.example.securityframe.Service;
 
 import com.example.securityframe.DAO.TransactionDAO;
+import com.example.securityframe.Entity.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,5 +12,7 @@ public class TransactionService {
     TransactionDAO transactionDAO;
 
 
-
+    public void createTransaction(Transaction transaction) {
+        transactionDAO.createTransaction(transaction);
+    }
 }

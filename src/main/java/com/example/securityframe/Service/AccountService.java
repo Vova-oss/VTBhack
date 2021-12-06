@@ -3,6 +3,7 @@ package com.example.securityframe.Service;
 import com.example.securityframe.DAO.AccountDAO;
 import com.example.securityframe.Entity.Account;
 import com.example.securityframe.Entity.Manager;
+import com.example.securityframe.Entity.Transaction;
 import com.example.securityframe.Security.SService.JWTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ public class AccountService {
     ManagerService managerService;
     @Autowired
     AccountService accountService;
+    @Autowired
+    TransactionService transactionService;
 
     public Account findByManagerId(Long id) {
         return accountDAO.findByManagerId(id);
@@ -38,6 +41,14 @@ public class AccountService {
     }
 
     public boolean withdrawalOfFunds(Long account_id, Long amount) {
-        return accountDAO.withdrawalOfFunds(account_id, amount);
+        if(accountDAO.withdrawalOfFunds(account_id, amount)){
+            Transaction transaction = new Transaction();
+            transaction.setAccount_id(account_id);
+            transaction.setCategory("Переводы");
+            transaction.setValue(-amount);
+            transactionService.createTransaction(transaction);
+            return true;
+        }
+        return false;
     }
 }

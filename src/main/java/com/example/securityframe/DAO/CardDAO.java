@@ -157,7 +157,7 @@ public class CardDAO {
      * @param amount - сумма, на которую хотим пополнить
      */
     public void topUpAccount(Long card_id, Long amount) {
-        String sql = "update card set account = account ? where id = ?";
+        String sql = "update card set account = account + ? where id = ?";
 
         Connection con = null;
         PreparedStatement ps = null;

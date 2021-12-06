@@ -91,9 +91,7 @@ public class DepartmentService {
                 String id = array.getJSONObject(i).getString("id");
                 workerService.replaceDepartmentId(id, department.getId());
             }
-        } catch (JSONException e) {
-            StaticMethods.createResponse(request, response, HttpServletResponse.SC_BAD_REQUEST, "Incorrect JSON");
-        }
+        } catch (JSONException ignored) {}
 
     }
 
