@@ -56,6 +56,12 @@ update card set remains = 200 where id = 1;
     join card c on transaction.card_id = c.id
     join worker w on c.worker_id = w.id
     join department d on w.department_id = d.id
+where d.account_id = 1
+  
+and date + time < now()
+and date > '2021-11-29'
+
+
 union all
 select
         date
@@ -70,6 +76,8 @@ select
         , a.currency
     from transaction
     join account a on transaction.account_id = a.id
-    join manager m on a.manager_id = m.id)
+    join manager m on a.manager_id = m.id
+where a.id = 1
+and date + time < now())
 order by date, time
 limit 10 offset 0;
