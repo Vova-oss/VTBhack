@@ -1,16 +1,13 @@
 package com.example.securityframe.DAO;
 
-import com.example.securityframe.Entity.Card;
 import com.example.securityframe.Entity.Transaction;
+import com.example.securityframe.ResponseModel.HistoryOfTransactions.OneEntry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class TransactionDAO {
@@ -58,33 +55,78 @@ public class TransactionDAO {
         }
     }
 
-    public void transactionHistory() {
-        String sql = "";
+    public List<OneEntry> transactionHistory(String where, String common_where, String page, Long account_id) {
+        String sql = "select * from\n" +
+                "(select\n" +
+                "        date\n" +
+                "        , time\n" +
+                "        , category\n" +
+                "        , concat(w.surname, ' ', substring(w.name from 1 for 1), '. ', substring(w.patronymic from 1 for 1),'.' ) as fio\n" +
+                "        , d.name\n" +
+                "        , c.type\n" +
+                "        , c.payment_system\n" +
+                "        , c.card_number\n" +
+                "        , value\n" +
+                "        , c.currency\n" +
+                "    from transaction\n" +
+                "    join card c on transaction.card_id = c.id\n" +
+                "    join worker w on c.worker_id = w.id\n" +
+                "    join department d on w.department_id = d.id\n" +
+                "where d.account_id = ?\n" +
+                where+
+                "\n" +
+                "\n" +
+                "union all\n" +
+                "select\n" +
+                "        date\n" +
+                "        , time\n" +
+                "        , category\n" +
+                "        , concat(m.surname, ' ', substring(m.name from 1 for 1), '. ', substring(m.patronymic from 1 for 1), '.')\n" +
+                "        , m.post\n" +
+                "        , 'Пополнение карты'\n" +
+                "        , 'Счёт'\n" +
+                "        , a.account_number\n" +
+                "        , value\n" +
+                "        , a.currency\n" +
+                "    from transaction\n" +
+                "    join account a on transaction.account_id = a.id\n" +
+                "    join manager m on a.manager_id = m.id\n" +
+                "where a.id = ?\n" +
+                where+
+                ") " +
+                "as big_table\n" +
+                common_where +
+                "\n" +
+                "order by date, time\n" +
+                "limit 10 offset 10*?;";
+
+        System.out.println(sql);
 
         Connection con = null;
         PreparedStatement ps = null;
         try {
             con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
+            ps.setLong(1, account_id);
+            ps.setLong(2, account_id);
+            ps.setLong(3, Long.parseLong(page));
             ResultSet r = ps.executeQuery();
-            List<Card> list = new ArrayList<>();
+            List<OneEntry> list = new ArrayList<>();
             while (r.next()){
-                Card card = new Card();
-                card.setId(r.getLong("id"));
-                card.setWorker_id(r.getLong("worker_id"));
-                card.setPayment_system(r.getString("payment_system"));
-                card.setCard_number(r.getString("card_number"));
-                card.setAccount(r.getLong("account"));
-                card.setType(r.getString("type"));
-                card.setPurpose_of_creation(r.getString("purpose_of_creation"));
-                card.setStatus(r.getString("status"));
-                card.setLimit(r.getLong("limit"));
-                card.setTerm(r.getLong("term"));
-                card.setRemains(r.getLong("remains"));
-                card.setAutoUpdate(r.getBoolean("auto_update"));
-                card.setCurrency(r.getString("currency"));
-                list.add(card);
+                OneEntry oneEntry = new OneEntry();
+                oneEntry.setDate(r.getString("date"));
+                oneEntry.setTime(r.getString("time").substring(0,5));
+                oneEntry.setCategory(r.getString("category"));
+                oneEntry.setFio(r.getString("fio"));
+                oneEntry.setName(r.getString("name"));
+                oneEntry.setType(r.getString("type"));
+                oneEntry.setPayment_system(r.getString("payment_system"));
+                oneEntry.setCard_number(r.getString("card_number"));
+                oneEntry.setValue(r.getString("value"));
+                oneEntry.setCurrency(r.getString("currency"));
+                list.add(oneEntry);
             }
+            return list;
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }finally {
@@ -97,6 +139,6 @@ public class TransactionDAO {
                 throwables.printStackTrace();
             }
         }
-
+        return null;
     }
 }

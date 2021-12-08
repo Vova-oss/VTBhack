@@ -41,6 +41,7 @@ select * from account;
 
 update card set remains = 200 where id = 1;
 
+select * from
 (select
         date
         , time
@@ -57,9 +58,7 @@ update card set remains = 200 where id = 1;
     join worker w on c.worker_id = w.id
     join department d on w.department_id = d.id
 where d.account_id = 1
-  
-and date + time < now()
-and date > '2021-11-29'
+and date + time <= now()
 
 
 union all
@@ -78,6 +77,8 @@ select
     join account a on transaction.account_id = a.id
     join manager m on a.manager_id = m.id
 where a.id = 1
-and date + time < now())
+and date + time <= now()) as big_table
+
+
 order by date, time
-limit 10 offset 0;
+limit 10 offset 10*?;
