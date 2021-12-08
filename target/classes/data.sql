@@ -38,3 +38,17 @@ where worker_id = 3;
 
 update account set current_account = 2821650 where id = 1;
 select * from account;
+
+update card set remains = 200 where id = 1;
+
+select
+     date
+     , time
+     , category
+     , case
+         when (transaction.card_id is not null) then transaction.card_id
+         when (transaction.account_id is not null) then transaction.account_id
+     end
+from transaction
+join card c on transaction.card_id = c.id
+join account a on transaction.account_id = a.id

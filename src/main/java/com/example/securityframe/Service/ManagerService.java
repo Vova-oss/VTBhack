@@ -19,11 +19,11 @@ import static com.example.securityframe.Security.SecurityConstants.TOKEN_PREFIX;
 public class ManagerService {
 
     @Autowired
-    ManagerDAO managerDAO;
+    private ManagerDAO managerDAO;
     @Autowired
-    AccountService accountService;
+    private AccountService accountService;
     @Autowired
-    JWTokenService jwTokenService;
+    private JWTokenService jwTokenService;
 
     public Manager findByEmail(String email){
         return managerDAO.findByEmail(email);
@@ -59,4 +59,11 @@ public class ManagerService {
         return widgetCurrentAccount;
 
     }
+
+//    public void fiveGeneralInformation(HttpServletRequest request) {
+//
+//        Account account = accountService.findByJwt(request);
+//        Long current_account = account.getCurrent_account();
+//
+//    }
 }

@@ -123,4 +123,12 @@ public class CardService {
     public List<Card> findAll() {
         return cardDAO.findAll();
     }
+
+    public Card findById(long i) {
+        return cardDAO.findById(i);
+    }
+
+    public void transferFromCard(Long card_id, Long amount) {
+        cardDAO.transferFromCard(card_id, amount);
+    }
 }

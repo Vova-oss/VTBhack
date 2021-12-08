@@ -17,16 +17,16 @@ import static com.example.securityframe.Security.SecurityConstants.TOKEN_PREFIX;
 public class AccountService {
 
     @Autowired
-    AccountDAO accountDAO;
+    private AccountDAO accountDAO;
 
     @Autowired
-    JWTokenService jwTokenService;
+    private JWTokenService jwTokenService;
     @Autowired
-    ManagerService managerService;
+    private ManagerService managerService;
     @Autowired
-    AccountService accountService;
+    private AccountService accountService;
     @Autowired
-    TransactionService transactionService;
+    private TransactionService transactionService;
 
     public Account findByManagerId(Long id) {
         return accountDAO.findByManagerId(id);

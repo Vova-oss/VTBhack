@@ -20,7 +20,7 @@ public class TransactionDAO {
     String db_pass;
 
     public void createTransaction(Transaction transaction) {
-        String sql = "insert into transaction (account_id, card_id, category, date, value) VALUES (?, ?, ?, ?, ?)";
+        String sql = "insert into transaction (account_id, card_id, category, date, time, value) VALUES (?, ?, ?, ?, ?, ?)";
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -38,7 +38,8 @@ public class TransactionDAO {
 
             ps.setString(3, transaction.getCategory());
             ps.setDate(4, new Date(System.currentTimeMillis()));
-            ps.setLong(5, transaction.getValue());
+            ps.setTime(5, new Time(System.currentTimeMillis()));
+            ps.setLong(6, transaction.getValue());
             ps.execute();
         } catch (SQLException throwable) {
             throwable.printStackTrace();

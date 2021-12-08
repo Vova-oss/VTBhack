@@ -156,4 +156,9 @@ public class StartController {
         return departmentService.getDepartmentsWorkersCards(request, response);
     }
 
+//    @GetMapping("/fiveGeneralInformation")
+//    public void fiveGeneralInformation(HttpServletRequest request, HttpServletResponse response){
+//        managerService.fiveGeneralInformation(request);
+//    }
+
 }

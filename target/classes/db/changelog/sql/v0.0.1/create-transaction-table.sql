@@ -5,6 +5,7 @@ create table transaction (
     card_id integer,
     category varchar(255),
     date date,
+    time time,
     value bigint,
 
     primary key (id),

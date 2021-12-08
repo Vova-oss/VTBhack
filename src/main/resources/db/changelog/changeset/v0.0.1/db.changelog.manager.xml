@@ -18,6 +18,10 @@
         <insert tableName="manager">
             <column name="email" value="manager@manager"/>
             <column name="password" value="$2a$12$EcqBEW9yjMedBm9ONwu4Me.G8Kw8vaxYNRCECzOp8avp7gQADjeBG"/>
+            <column name="name" value="Иван"/>
+            <column name="surname" value="Иванов"/>
+            <column name="patronymic" value="Иванович"/>
+            <column name="post" value="Владелец счёта"/>
         </insert>
     </changeSet>
 

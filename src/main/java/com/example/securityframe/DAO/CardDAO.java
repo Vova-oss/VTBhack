@@ -323,4 +323,29 @@ public class CardDAO {
         }
         return null;
     }
+
+    public void transferFromCard(Long card_id, Long amount) {
+        String sql = "update card set account = account - ? where id = ?";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, amount);
+            ps.setLong(2, card_id);
+            ps.execute();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+    }
 }
