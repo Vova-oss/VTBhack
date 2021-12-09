@@ -1,6 +1,7 @@
 package com.example.securityframe.DAO;
 
 import com.example.securityframe.Entity.Transaction;
+import com.example.securityframe.ResponseModel.ExpenseSchedule.OneDay;
 import com.example.securityframe.ResponseModel.HistoryOfTransactions.OneEntry;
 import com.example.securityframe.ResponseModel.TopSpendingCategories.OneCategory;
 import org.springframework.beans.factory.annotation.Value;
@@ -344,6 +345,67 @@ public class TransactionDAO {
             if (r.next())
                 return r.getLong("value");
 
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+
+    }
+
+    public List<OneDay> expenseSchedule(String where, Long id) {
+
+        String sql = "select SUM(value), date\n" +
+                "from (\n" +
+                "      select date,\n" +
+                "             value * (-1) value,\n" +
+                "             purpose\n" +
+                "      from transaction\n" +
+                "               join card c on transaction.card_id = c.id\n" +
+                "               join worker w on c.worker_id = w.id\n" +
+                "               join department d on w.department_id = d.id\n" +
+                "      where d.account_id = ?\n" +
+                "        and value < 0\n" + where+
+                "\n" +
+                "      union all\n" +
+                "      select date,\n" +
+                "             value * (-1),\n" +
+                "             purpose\n" +
+                "      from transaction\n" +
+                "               join account a on transaction.account_id = a.id\n" +
+                "               join manager m on a.manager_id = m.id\n" +
+                "      where a.id = ?\n" +
+                "        and value < 0\n" + where +
+                "  ) as tsc\n" +
+                "\n" +
+                "group by date\n" +
+                "order by date;";
+
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, id);
+            ps.setLong(2, id);
+            ResultSet r = ps.executeQuery();
+            List<OneDay> list = new ArrayList<>();
+            while (r.next()){
+                OneDay oneDay = new OneDay();
+                oneDay.setDate(r.getString("date"));
+                oneDay.setAmount(r.getString("sum"));
+                list.add(oneDay);
+            }
+            return list;
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }finally {

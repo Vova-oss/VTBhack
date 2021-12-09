@@ -3,6 +3,7 @@ package com.example.securityframe.Service;
 import com.example.securityframe.DAO.TransactionDAO;
 import com.example.securityframe.Entity.Account;
 import com.example.securityframe.Entity.Transaction;
+import com.example.securityframe.ResponseModel.ExpenseSchedule.OneDay;
 import com.example.securityframe.ResponseModel.HistoryOfTransactions.OneEntry;
 import com.example.securityframe.ResponseModel.HistoryOfTransactions.OneGroupByDate;
 import com.example.securityframe.ResponseModel.TopSpendingCategories.OneCategory;
@@ -188,5 +189,34 @@ public class TransactionService {
 
     public Long findMonthlyExpensesByAccountId(Long id) {
         return transactionDAO.findMonthlyExpensesByAccountId(id);
+    }
+
+    public List<OneDay> expenseSchedule(Date from, Date to, String purpose, String whatWasSpentOn,
+                                                 HttpServletRequest request, HttpServletResponse response) {
+
+        Account account = accountService.findByJwt(request);
+
+        String where = "";
+
+        if(from != null)
+            where+="\nand date >= '" + from + "'";
+        else if(to!=null)
+            where+="\nand date >= date('"+to+"')-integer'7'";
+        else where+="\nand date >= date(now())-integer'7'";
+
+        if(to != null)
+            where+="\nand date <= '" + to +"'";
+        else where+="\nand date + time <= now()";
+
+        if(purpose != null)
+            where+="\nwhere purpose = '" + purpose + "'";
+
+        if(whatWasSpentOn != null)
+            where+="\nand category like '%" + whatWasSpentOn + "%'";
+
+        List<OneDay> list = transactionDAO.expenseSchedule(where, account.getId());
+
+        return list;
+
     }
 }
