@@ -153,4 +153,36 @@ public class TransactionService {
         topSpendingCategories.setList(list);
         return topSpendingCategories;
     }
+
+    public TopSpendingCategories topSpendingCategoriesByWorker(
+            Date from, Date to, String purpose, String whatWasSpentOn, Long worker_id,
+            HttpServletRequest request, HttpServletResponse response) {
+
+        String where = "";
+
+        if(from != null)
+            where+="\nand date >= '" + from + "'";
+
+        if(to != null)
+            where+="\nand date <= '" + to +"'";
+        else where+="\nand date + time <= now()";
+
+        if(purpose != null)
+            where+="\nwhere purpose = '" + purpose + "'";
+
+        if(whatWasSpentOn != null)
+            where+="\nand category like '%" + whatWasSpentOn + "%'";
+
+        List<OneCategory> list = transactionDAO.topSpendingCategoriesByWorker(where, worker_id);
+
+        Long sum = 0L;
+        for(OneCategory oneCategory: list){
+            sum += Long.parseLong(oneCategory.getSum());
+        }
+        TopSpendingCategories topSpendingCategories = new TopSpendingCategories();
+        topSpendingCategories.setMaxSum(String.valueOf(sum));
+        topSpendingCategories.setList(list);
+        return topSpendingCategories;
+
+    }
 }

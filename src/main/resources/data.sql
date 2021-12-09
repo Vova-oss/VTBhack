@@ -138,4 +138,25 @@ from (
            ) as tsc
       where purpose like '%'
   ) as tscTwoCol
+group by category;
+
+
+--------------------- topSpendingCategoriesByWorker -----------------------------------------------------------------------
+
+select SUM(value), category
+from (
+         select *
+         from (
+                  select category,
+                         value * (-1) value,
+                         purpose
+                  from transaction
+                           join card c on transaction.card_id = c.id
+                           join worker w on c.worker_id = w.id
+                           join department d on w.department_id = d.id
+                  where w.id = 1
+                    and value < 0
+              ) as tsc
+         where purpose like '%'
+     ) as tscTwoCol
 group by category

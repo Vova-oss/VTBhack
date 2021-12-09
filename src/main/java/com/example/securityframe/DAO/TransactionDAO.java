@@ -101,7 +101,6 @@ public class TransactionDAO {
                 "order by date, time\n" +
                 "limit 10 offset 10*?;";
 
-        System.out.println(sql);
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -165,7 +164,6 @@ public class TransactionDAO {
                 "order by date, time\n" +
                 "limit 10 offset 10*?";
 
-        System.out.println(sql);
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -236,7 +234,6 @@ public class TransactionDAO {
                 "  ) as tscTwoCol\n" +
                 "group by category";
 
-        System.out.println(sql);
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -267,5 +264,57 @@ public class TransactionDAO {
             }
         }
         return null;
+    }
+
+    public List<OneCategory> topSpendingCategoriesByWorker(String where, Long worker_id) {
+
+        String sql = "select SUM(value), category\n" +
+                "from (\n" +
+                "         select *\n" +
+                "         from (\n" +
+                "                  select category,\n" +
+                "                         value * (-1) value,\n" +
+                "                         purpose\n" +
+                "                  from transaction\n" +
+                "                           join card c on transaction.card_id = c.id\n" +
+                "                           join worker w on c.worker_id = w.id\n" +
+                "                           join department d on w.department_id = d.id\n" +
+                "                  where w.id = ?\n" +
+                "                    and value < 0\n" + where +
+                "              ) as tsc\n" +
+                "         where purpose like '%'\n" +
+                "     ) as tscTwoCol\n" +
+                "group by category";
+
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, worker_id);
+            ResultSet r = ps.executeQuery();
+            List<OneCategory> list = new ArrayList<>();
+            while (r.next()){
+                OneCategory oneCategory = new OneCategory();
+                oneCategory.setCategory(r.getString("category"));
+                oneCategory.setSum(r.getString("sum"));
+                list.add(oneCategory);
+            }
+            return list;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+
     }
 }
