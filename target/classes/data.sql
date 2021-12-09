@@ -57,11 +57,8 @@ select * from
     join card c on transaction.card_id = c.id
     join worker w on c.worker_id = w.id
     join department d on w.department_id = d.id
-where d.account_id = 1
-and value > 0
-
+where w.id = 1
 and date + time <= now()
-and date >= '2021-11-29'
 
 
 union all
@@ -80,8 +77,30 @@ select
     join account a on transaction.account_id = a.id
     join manager m on a.manager_id = m.id
 where a.id = 1
-and date + time < now()) as big_table
+and date + time <= now()) as big_table
 
 
 order by date, time
 limit 10 offset 10*?;
+
+
+select
+    date
+     , time
+     , category
+     , concat(w.surname, ' ', substring(w.name from 1 for 1), '. ', substring(w.patronymic from 1 for 1),'.' ) as fio
+     , d.name
+     , c.type
+     , c.payment_system
+     , c.card_number
+     , value
+     , c.currency
+from transaction
+         join card c on transaction.card_id = c.id
+         join worker w on c.worker_id = w.id
+         join department d on w.department_id = d.id
+where w.id = 1
+  and date + time <= now()
+
+order by date, time
+limit 10 offset 10

@@ -54,7 +54,9 @@ public class DepartmentService {
 
     public List<Department> findAllByAccount_id(HttpServletRequest request, HttpServletResponse response) {
         Account account = accountService.findByJwt(request);
-        return departmentDAO.findAllByAccount_id(account.getId());
+        List<Department> list = departmentDAO.findAllByAccount_id(account.getId());
+        list.sort(Comparator.comparing(Department::getId));
+        return list;
     }
 
     public boolean existenceOfName(String name, HttpServletRequest request, HttpServletResponse response){

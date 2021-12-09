@@ -141,4 +141,68 @@ public class TransactionDAO {
         }
         return null;
     }
+
+    public List<OneEntry> transactionHistoryByWorkerId(String where, String page, Long worker_id) {
+
+        String sql = "select\n" +
+                "    date\n" +
+                "     , time\n" +
+                "     , category\n" +
+                "     , concat(w.surname, ' ', substring(w.name from 1 for 1), '. ', substring(w.patronymic from 1 for 1),'.' ) as fio\n" +
+                "     , d.name\n" +
+                "     , c.type\n" +
+                "     , c.payment_system\n" +
+                "     , c.card_number\n" +
+                "     , value\n" +
+                "     , c.currency\n" +
+                "from transaction\n" +
+                "         join card c on transaction.card_id = c.id\n" +
+                "         join worker w on c.worker_id = w.id\n" +
+                "         join department d on w.department_id = d.id\n" +
+                "where w.id = ?\n" +
+                where +
+                "order by date, time\n" +
+                "limit 10 offset 10*?";
+
+        System.out.println(sql);
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, worker_id);
+            ps.setLong(2, Long.parseLong(page));
+            ResultSet r = ps.executeQuery();
+            List<OneEntry> list = new ArrayList<>();
+            while (r.next()){
+                OneEntry oneEntry = new OneEntry();
+                oneEntry.setDate(r.getString("date"));
+                oneEntry.setTime(r.getString("time").substring(0,5));
+                oneEntry.setCategory(r.getString("category"));
+                oneEntry.setFio(r.getString("fio"));
+                oneEntry.setName(r.getString("name"));
+                oneEntry.setType(r.getString("type"));
+                oneEntry.setPayment_system(r.getString("payment_system"));
+                oneEntry.setCard_number(r.getString("card_number"));
+                oneEntry.setValue(r.getString("value"));
+                oneEntry.setCurrency(r.getString("currency"));
+                list.add(oneEntry);
+            }
+            return list;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+
+    }
 }
