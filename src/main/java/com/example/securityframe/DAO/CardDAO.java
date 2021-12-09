@@ -348,4 +348,70 @@ public class CardDAO {
             }
         }
     }
+
+
+    public Long findAccountByAccountId(Long id) {
+        String sql = "select sum(account)\n" +
+                "from card\n" +
+                "join worker w on card.worker_id = w.id\n" +
+                "join department d on w.department_id = d.id\n" +
+                "where account_id = ?";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, id);
+            ResultSet r = ps.executeQuery();
+            if (r.next()){
+                return r.getLong("sum");
+            }
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public Long amountOfActiveCardsByAccountId(Long account_id) {
+        String sql = "select count(*)\n" +
+                "    from card\n" +
+                "    join worker w on card.worker_id = w.id\n" +
+                "    join department d on d.id = w.department_id\n" +
+                "where d.account_id = ?\n" +
+                "and status = 'ACTIVE';";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, account_id);
+            ResultSet r = ps.executeQuery();
+            if (r.next()){
+                return r.getLong("count");
+            }
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+    }
 }

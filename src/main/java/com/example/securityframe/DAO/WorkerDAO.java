@@ -178,4 +178,35 @@ public class WorkerDAO {
         }
         return null;
     }
+
+    public Long amountOfWorkersByAccountId(Long account_id) {
+        String sql = "select count(*)\n" +
+                "     from worker\n" +
+                "    join department d on worker.department_id = d.id\n" +
+                "where d.account_id = ?;";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, account_id);
+            ResultSet r = ps.executeQuery();
+            if (r.next()){
+                return r.getLong("count");
+            }
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+    }
 }

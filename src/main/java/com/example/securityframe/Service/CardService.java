@@ -132,4 +132,12 @@ public class CardService {
     public void transferFromCard(Long card_id, Long amount) {
         cardDAO.transferFromCard(card_id, amount);
     }
+
+    public Long findAccountByAccountId(Long id) {
+        return cardDAO.findAccountByAccountId(id);
+    }
+
+    public Long amountOfActiveCardsByAccountId(Long account_id) {
+        return cardDAO.amountOfActiveCardsByAccountId(account_id);
+    }
 }

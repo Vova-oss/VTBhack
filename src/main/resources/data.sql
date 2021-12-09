@@ -159,4 +159,40 @@ from (
               ) as tsc
          where purpose like '%'
      ) as tscTwoCol
-group by category
+group by category;
+
+-------------------------------------------- Выделено средст --------------
+
+select sum(account)
+from card
+join worker w on card.worker_id = w.id
+join department d on w.department_id = d.id
+where account_id = 1;
+
+---------------------------- Траты за месяц ----------------------------------------------
+
+select SUM(t.value) * (-1) value
+    from transaction t
+join card c on c.id = t.card_id
+join worker w on c.worker_id = w.id
+join department d on w.department_id = d.id
+where t.card_id is not null
+and d.account_id = ?
+and t.value < 0
+and to_char(t.date, 'YYYY') = to_char(NOW(), 'YYYY')
+and to_char(t.date, 'MM') = to_char(NOW(), 'MM')
+and t.date + t.time <= now();
+
+--------------------------- Активных карт ----------------------
+select count(*)
+    from card
+    join worker w on card.worker_id = w.id
+    join department d on d.id = w.department_id
+where d.account_id = 1
+and status = 'ACTIVE';
+
+-------------------------------Сотрудников --------------------------
+select count(*)
+     from worker
+    join department d on worker.department_id = d.id
+where d.account_id = 1;

@@ -4,6 +4,7 @@ import com.example.securityframe.AuxiliaryClasses.StaticMethods;
 import com.example.securityframe.DAO.ManagerDAO;
 import com.example.securityframe.Entity.Account;
 import com.example.securityframe.Entity.Manager;
+import com.example.securityframe.ResponseModel.FiveGeneralInformation;
 import com.example.securityframe.ResponseModel.WidgetCurrentAccount;
 import com.example.securityframe.Security.SService.JWTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,12 @@ public class ManagerService {
     private AccountService accountService;
     @Autowired
     private JWTokenService jwTokenService;
+    @Autowired
+    private CardService cardService;
+    @Autowired
+    private TransactionService transactionService;
+    @Autowired
+    private WorkerService workerService;
 
     public Manager findByEmail(String email){
         return managerDAO.findByEmail(email);
@@ -60,10 +67,25 @@ public class ManagerService {
 
     }
 
-//    public void fiveGeneralInformation(HttpServletRequest request) {
-//
-//        Account account = accountService.findByJwt(request);
-//        Long current_account = account.getCurrent_account();
-//
-//    }
+    public FiveGeneralInformation fiveGeneralInformation(HttpServletRequest request) {
+
+        Account account = accountService.findByJwt(request);
+        Long current_account = account.getCurrent_account();
+
+        // Выделено средств
+        Long allocated_funds = cardService.findAccountByAccountId(account.getId());
+        // Общий баланс
+        Long total_balance = account.getCurrent_account() + allocated_funds;
+        // Траты за месяц
+        Long monthlyExpenses = transactionService.findMonthlyExpensesByAccountId(account.getId());
+        // Активных карт
+        Long amountOfCards = cardService.amountOfActiveCardsByAccountId(account.getId());
+        // Сотрудников
+        Long amountOfWorkers = workerService.amountOfWorkersByAccountId(account.getId());
+
+        FiveGeneralInformation fiveGeneralInformation = new FiveGeneralInformation(
+                allocated_funds, total_balance, monthlyExpenses, amountOfCards, amountOfWorkers);
+
+        return fiveGeneralInformation;
+    }
 }

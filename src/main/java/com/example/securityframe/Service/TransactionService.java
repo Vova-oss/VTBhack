@@ -185,4 +185,8 @@ public class TransactionService {
         return topSpendingCategories;
 
     }
+
+    public Long findMonthlyExpensesByAccountId(Long id) {
+        return transactionDAO.findMonthlyExpensesByAccountId(id);
+    }
 }

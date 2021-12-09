@@ -317,4 +317,46 @@ public class TransactionDAO {
         return null;
 
     }
+
+    public Long findMonthlyExpensesByAccountId(Long id) {
+
+        String sql = "select SUM(t.value) * (-1) value\n" +
+                "    from transaction t\n" +
+                "join card c on c.id = t.card_id\n" +
+                "join worker w on c.worker_id = w.id\n" +
+                "join department d on w.department_id = d.id\n" +
+                "where t.card_id is not null\n" +
+                "and d.account_id = ?\n" +
+                "and t.value < 0\n" +
+                "and to_char(t.date, 'YYYY') = to_char(NOW(), 'YYYY')\n" +
+                "and to_char(t.date, 'MM') = to_char(NOW(), 'MM')\n" +
+                "and t.date + t.time <= now();";
+
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, id);
+            ResultSet r = ps.executeQuery();
+            List<OneCategory> list = new ArrayList<>();
+            if (r.next())
+                return r.getLong("value");
+
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+
+    }
 }

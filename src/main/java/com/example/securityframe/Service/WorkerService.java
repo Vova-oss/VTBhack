@@ -79,4 +79,7 @@ public class WorkerService {
         return workerInfo;
     }
 
+    public Long amountOfWorkersByAccountId(Long account_id) {
+        return workerDAO.amountOfWorkersByAccountId(account_id);
+    }
 }

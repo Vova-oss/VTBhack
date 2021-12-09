@@ -5,6 +5,7 @@ import com.example.securityframe.Entity.Card;
 import com.example.securityframe.Entity.Department;
 import com.example.securityframe.Entity.Worker;
 import com.example.securityframe.ResponseModel.DepartmentsWorkersCards.DepartmentDTO;
+import com.example.securityframe.ResponseModel.FiveGeneralInformation;
 import com.example.securityframe.ResponseModel.WidgetCurrentAccount;
 import com.example.securityframe.Service.CardService;
 import com.example.securityframe.Service.DepartmentService;
@@ -156,9 +157,9 @@ public class StartController {
         return departmentService.getDepartmentsWorkersCards(request, response);
     }
 
-//    @GetMapping("/fiveGeneralInformation")
-//    public void fiveGeneralInformation(HttpServletRequest request, HttpServletResponse response){
-//        managerService.fiveGeneralInformation(request);
-//    }
+    @GetMapping("/fiveGeneralInformation")
+    public FiveGeneralInformation fiveGeneralInformation(HttpServletRequest request, HttpServletResponse response){
+        return managerService.fiveGeneralInformation(request);
+    }
 
 }

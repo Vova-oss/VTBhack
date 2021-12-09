@@ -28,7 +28,7 @@ public class WorkerController {
     @GetMapping("/getInfoOfCardsByWorkerId")
     public List<Card> getInfoOfCardsByWorkerId(
             @ApiParam(
-                    name = "WorkerId",
+                    name = "worker_id",
                     value = "worker_id - :id сотрудника, по картам которого хотим получить инфу",
                     example = "3",
                     required = true
@@ -43,7 +43,7 @@ public class WorkerController {
     @GetMapping("/getWorkerInfo")
     public WorkerInfo getWorkerInfo(
             @ApiParam(
-                    name = "WorkerId",
+                    name = "worker_id",
                     value = "worker_id - :id сотрудника, по которому хотим получить инфу",
                     example = "3",
                     required = true
