@@ -12,8 +12,8 @@ public class OneEntry {
     @ApiModelProperty(notes = "Время", name = "time", example = "02:50")
     private String time;
 
-    @ApiModelProperty(notes = "Категория", name = "category", example = "Figma.com")
-    private String category;
+    @ApiModelProperty(notes = "Назначение", name = "purpose", example = "Figma.com")
+    private String purpose;
 
     @ApiModelProperty(notes = "ФИО", name = "fio", example = "Иванов И. И.")
     private String fio;

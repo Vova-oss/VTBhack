@@ -87,6 +87,7 @@ public class CardService {
         Transaction transaction = new Transaction();
         transaction.setCard_id(card_id);
         transaction.setCategory("Переводы");
+        transaction.setPurpose("Банковский счёт");
         transaction.setValue(amount);
         transactionService.createTransaction(transaction);
     }

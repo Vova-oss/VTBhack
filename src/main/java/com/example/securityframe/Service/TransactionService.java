@@ -5,6 +5,8 @@ import com.example.securityframe.Entity.Account;
 import com.example.securityframe.Entity.Transaction;
 import com.example.securityframe.ResponseModel.HistoryOfTransactions.OneEntry;
 import com.example.securityframe.ResponseModel.HistoryOfTransactions.OneGroupByDate;
+import com.example.securityframe.ResponseModel.TopSpendingCategories.OneCategory;
+import com.example.securityframe.ResponseModel.TopSpendingCategories.TopSpendingCategories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,6 @@ public class TransactionService {
         Account account = accountService.findByJwt(request);
 
         String where = "";
-        String common_where = "";
 
         if(from != null)
             where+="\nand date >= '" + from + "'";
@@ -48,12 +49,12 @@ public class TransactionService {
             where+="\nand value > 0";
 
         if(purpose != null)
-            common_where+="\nwhere type = '" + purpose + "'";
+            where+="\nand purpose = '" + purpose + "'";
 
         if(whatWasSpentOn != null)
-            where+="\nand category like '" + whatWasSpentOn + "'";
+            where+="\nand category like '%" + whatWasSpentOn + "%'";
 
-        List<OneEntry> list = transactionDAO.transactionHistory(where, common_where, page, account.getId());
+        List<OneEntry> list = transactionDAO.transactionHistory(where, page, account.getId());
         List<OneGroupByDate> finallyList = new ArrayList<>();
         OneGroupByDate oneGroupByDate = null;
 
@@ -93,10 +94,10 @@ public class TransactionService {
             where+="\nand value > 0";
 
         if(purpose != null)
-            where+="\nand c.type = '" + purpose + "'";
+            where+="\nand purpose = '" + purpose + "'";
 
         if(whatWasSpentOn != null)
-            where+="\nand category like '" + whatWasSpentOn + "'";
+            where+="\nand category like '%" + whatWasSpentOn + "%'";
 
         List<OneEntry> list = transactionDAO.transactionHistoryByWorkerId(where, page, worker_id);
         List<OneGroupByDate> finallyList = new ArrayList<>();
@@ -118,5 +119,38 @@ public class TransactionService {
 
         return finallyList;
 
+    }
+
+    public TopSpendingCategories topSpendingCategories(Date from, Date to, String purpose,
+                                      String whatWasSpentOn, HttpServletRequest request,
+                                      HttpServletResponse response) {
+
+        Account account = accountService.findByJwt(request);
+
+        String where = "";
+
+        if(from != null)
+            where+="\nand date >= '" + from + "'";
+
+        if(to != null)
+            where+="\nand date <= '" + to +"'";
+        else where+="\nand date + time <= now()";
+
+        if(purpose != null)
+            where+="\nwhere purpose = '" + purpose + "'";
+
+        if(whatWasSpentOn != null)
+            where+="\nand category like '%" + whatWasSpentOn + "%'";
+
+        List<OneCategory> list = transactionDAO.topSpendingCategories(where, account.getId());
+
+        Long sum = 0L;
+        for(OneCategory oneCategory: list){
+            sum += Long.parseLong(oneCategory.getSum());
+        }
+        TopSpendingCategories topSpendingCategories = new TopSpendingCategories();
+        topSpendingCategories.setMaxSum(String.valueOf(sum));
+        topSpendingCategories.setList(list);
+        return topSpendingCategories;
     }
 }

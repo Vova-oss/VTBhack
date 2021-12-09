@@ -3,6 +3,7 @@ create table transaction (
     id serial,
     account_id integer,
     card_id integer,
+    purpose varchar(255),
     category varchar(255),
     date date,
     time time,

@@ -1,4 +1,4 @@
-package com.example.securityframe.Controller;
+package com.example.securityframe.Controller.CreateTransactions;
 
 import com.example.securityframe.DAO.CardDAO;
 import com.example.securityframe.Entity.Card;
@@ -95,6 +95,23 @@ public class CreateTransactions {
         card.setCurrency("RUB");
         cardDAO.add(card);
 
+//        List<String> categories = List.of("Подписочные сервисы", "Рекламные компании", "Транспорт","Отели");
+//        List<String> podServices = List.of("Figma", "AWS", "Dropbox", "Mailchimp");
+//        List<String> reclCompany = List.of("Facebook", "GoogleADS");
+//        List<String> transport = List.of("Яндекс.Такси");
+//        List<String> hotel = List.of("Trivago", "AIRBnB");
+
+        List<CategoryAndPurpose> list = new ArrayList<>();
+        list.add(new CategoryAndPurpose("Подписочные сервисы", "Figma"));
+        list.add(new CategoryAndPurpose("Подписочные сервисы", "AWS"));
+        list.add(new CategoryAndPurpose("Подписочные сервисы", "Dropbox"));
+        list.add(new CategoryAndPurpose("Подписочные сервисы", "Mailchimp"));
+        list.add(new CategoryAndPurpose("Рекламные компании", "Facebook"));
+        list.add(new CategoryAndPurpose("Рекламные компании", "GoogleADS"));
+        list.add(new CategoryAndPurpose("Транспорт", "Яндекс.Такси"));
+        list.add(new CategoryAndPurpose("Отели", "Trivago"));
+        list.add(new CategoryAndPurpose("Отели", "AIRBnB"));
+
 
         // 1000 = 1 секунда
         Long nowTime = System.currentTimeMillis();
@@ -110,12 +127,17 @@ public class CreateTransactions {
             for (int i = 0; i < 3; i++) {
                 if(Math.random()*2 > 1) {
                     transaction.setCard_id(i + 1L);
-                    transaction.setCategory("Переводы");
-                    if(Math.random()*2>1){
+                    if(Math.random()*2>1.2){
+                        transaction.setPurpose("");
                         cardService.transferToCard((long) i, (long) (Math.random()*7000), request, response);
                     }else {
+
+                        CategoryAndPurpose temp = list.get((int) (Math.random()*8));
+                        transaction.setCategory(temp.getCategory());
+                        transaction.setPurpose(temp.getPurpose());
+
                         transaction.setValue((long) (Math.random()*(-500)));
-                        card = cardService.findById(i);
+                        card = cardService.findById(i + 1L);
                         if(card.getAccount()>=transaction.getValue()){
                             cardService.transferFromCard(card.getId(), transaction.getValue());
                             createTransaction(transaction);
@@ -129,7 +151,7 @@ public class CreateTransactions {
 
 
     public void createTransaction(Transaction transaction) {
-        String sql = "insert into transaction (account_id, card_id, category, date, time, value) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "insert into transaction (account_id, card_id, category, purpose, date, time, value) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -146,9 +168,10 @@ public class CreateTransactions {
             else ps.setNull(2, Types.INTEGER);
 
             ps.setString(3, transaction.getCategory());
-            ps.setDate(4, transaction.getDate());
-            ps.setTime(5, new Time(System.currentTimeMillis()));
-            ps.setLong(6, transaction.getValue());
+            ps.setString(4, transaction.getPurpose());
+            ps.setDate(5, transaction.getDate());
+            ps.setTime(6, new Time(System.currentTimeMillis()));
+            ps.setLong(7, transaction.getValue());
             ps.execute();
         } catch (SQLException throwable) {
             throwable.printStackTrace();

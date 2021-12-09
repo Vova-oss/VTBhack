@@ -45,6 +45,7 @@ public class AccountService {
             Transaction transaction = new Transaction();
             transaction.setAccount_id(account_id);
             transaction.setCategory("Переводы");
+            transaction.setPurpose("Банковская карта");
             transaction.setValue(-amount);
             transactionService.createTransaction(transaction);
             return true;

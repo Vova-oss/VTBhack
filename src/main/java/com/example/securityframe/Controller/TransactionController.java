@@ -1,6 +1,7 @@
 package com.example.securityframe.Controller;
 
 import com.example.securityframe.ResponseModel.HistoryOfTransactions.OneGroupByDate;
+import com.example.securityframe.ResponseModel.TopSpendingCategories.TopSpendingCategories;
 import com.example.securityframe.Service.TransactionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -118,6 +119,38 @@ public class TransactionController {
             HttpServletResponse response){
 
         return transactionService.transactionHistoryByWorkerId(from, to, refillOrExpenses, purpose, whatWasSpentOn, page, worker_id, request, response);
+    }
+
+    @ApiOperation(value = "Получение топ категорий трат")
+    @GetMapping("/topSpendingCategories")
+    public TopSpendingCategories topSpendingCategories(
+            @ApiParam(
+                    name = "from",
+                    value = "Период от (включительно)",
+                    example = "2021-11-29"
+            )
+            @RequestParam(value = "from", required = false) Date from,
+            @ApiParam(
+                    name = "to",
+                    value = "Период до (включительно)",
+                    example = "2021-12-08"
+            )
+            @RequestParam(value = "to", required = false) Date to,
+            @ApiParam(
+                    name = "purpose",
+                    value = "Тип карты (грубо говоря). Синие слова на макете. Это 'Назначение' в фильтре",
+                    example = "Транспорт"
+            )
+            @RequestParam(value = "purpose", required = false) String purpose,
+            @ApiParam(
+                    name = "whatWasSpentOn",
+                    value = "На что было потрачено. Это 'Поиск' в фильтре",
+                    example = "Apple.com"
+            )
+            @RequestParam(value = "whatWasSpentOn", required = false) String whatWasSpentOn,
+            HttpServletRequest request,
+            HttpServletResponse response){
+        return transactionService.topSpendingCategories(from, to, purpose, whatWasSpentOn, request, response);
     }
 
 }

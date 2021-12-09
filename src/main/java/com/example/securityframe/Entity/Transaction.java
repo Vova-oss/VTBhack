@@ -13,6 +13,7 @@ public class Transaction {
     private Long id;
     private Long card_id;
     private Long account_id;
+    private String purpose;
     private String category;
     private Date date;
     private Time time;

@@ -53,9 +53,9 @@ public class StartController {
             @ApiParam(
                     name = "Worker",
                     value = "id - не нужно\nname, surname, patronymic - ФИО\ndepartment_id - :id отдела, к которому " +
-                            "принадлежит сотрудник. Если отдел не был выбран, то ставить '-1'.",
+                            "принадлежит сотрудник.",
                     example = "{\nname: \"Владимир\",\nsurname: \"Полетаев\",\npatronymic: \"Викторович\", \n" +
-                            "department_id: \"-1\"\n}",
+                            "department_id: \"1\"\n}",
                     required = true
             )
             @RequestBody Worker worker,
