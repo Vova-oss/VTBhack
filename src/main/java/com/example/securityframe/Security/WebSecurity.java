@@ -46,7 +46,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter implements WebMvcC
                 .antMatchers("/start/**").hasAuthority("MANAGER")
                 .antMatchers("/worker/**").hasAuthority("MANAGER")
                 .antMatchers("/transaction/**").hasAuthority("MANAGER")
-                .antMatchers("/createTransactions/**").hasAuthority("MANAGER")
 
                 .anyRequest().permitAll()
                 .and()
