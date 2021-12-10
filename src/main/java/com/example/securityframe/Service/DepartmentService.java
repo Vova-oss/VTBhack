@@ -96,55 +96,60 @@ public class DepartmentService {
 
         List<DepartmentDTO> departmentDTOS = new ArrayList<>();
 
-//        String wn;
-//        String st;
-//        String dn;
+        if(status == null && worker_name == null && department_name == null && type == null){
 
-        if(status == null)
-            status = "%";
-        if (worker_name == null)
-            worker_name = "%";
-        else worker_name = "%" + worker_name + "%";
-        if(department_name == null)
-            department_name = "%";
-        if(type == null)
-            type = "%";
+            List<Department> departments = findAllByAccount_id(request, response);
+            for (Department department: departments){
 
-//        if(status != null && type != null)
-//            st = "and c.status = '" + status + "' and c.type = '" + type +"'";
-//        else if(status != null)
-//            st = "and c.status = '" + status + "'";
-//        else if(type != null)
-//            st = "and c.type = '" + type + "'";
-//        else st = "";
-//
-//        if(worker_name != null)
-//            wn ="and concat(w.name,' ', w.surname, ' ' , w.patronymic) like '%" + worker_name + "%' "+ st;
-//        else wn = ""+st;
-//
-//        if(department_name!=null)
-//            dn="and d.name = '" + department_name + "' "+ wn;
-//        else dn = ""+wn;
+                List<WorkerDTO> workerDTOS = new ArrayList<>();
+                long amountOfCards = 0;
 
-        List<Department> departments = findAllByAccount_idWithWhere(status, type, worker_name, department_name, request, response);
-        for (Department department: departments){
+                List<Worker> workers = workerService.findAllByDepartmentId(department.getId());
+                for(Worker worker: workers){
+                    List<Card> cards = cardService.findAllByWorkerId(worker.getId());
 
-            List<WorkerDTO> workerDTOS = new ArrayList<>();
-            long amountOfCards = 0;
+                    amountOfCards+=cards.size();
+                    WorkerDTO workerDTO = WorkerDTO.createWorkerDTO(worker, cards);
+                    workerDTOS.add(workerDTO);
+                }
 
-            List<Worker> workers = workerService.findAllByDepartmentIdWithWhere(status, type, worker_name, department.getId());
-            for(Worker worker: workers){
-                List<Card> cards = cardService.findAllByWorkerIdWithWhere(status, type, worker.getId());
+                workerDTOS.sort(Comparator.comparing(o -> (o.getSurname() + " " + o.getName() + " " + o.getPatronymic())));
 
-                amountOfCards+=cards.size();
-                WorkerDTO workerDTO = WorkerDTO.createWorkerDTO(worker, cards);
-                workerDTOS.add(workerDTO);
+                DepartmentDTO departmentDTO = DepartmentDTO.createDepartmentDTO(department, workerDTOS, amountOfCards);
+                departmentDTOS.add(departmentDTO);
             }
 
-            workerDTOS.sort(Comparator.comparing(o -> (o.getSurname() + " " + o.getName() + " " + o.getPatronymic())));
+        }else {
+            if(status == null)
+                status = "%";
+            if (worker_name == null)
+                worker_name = "%";
+            else worker_name = "%" + worker_name + "%";
+            if(department_name == null)
+                department_name = "%";
+            if(type == null)
+                type = "%";
 
-            DepartmentDTO departmentDTO = DepartmentDTO.createDepartmentDTO(department, workerDTOS, amountOfCards);
-            departmentDTOS.add(departmentDTO);
+            List<Department> departments = findAllByAccount_idWithWhere(status, type, worker_name, department_name, request, response);
+            for (Department department: departments){
+
+                List<WorkerDTO> workerDTOS = new ArrayList<>();
+                long amountOfCards = 0;
+
+                List<Worker> workers = workerService.findAllByDepartmentIdWithWhere(status, type, worker_name, department.getId());
+                for(Worker worker: workers){
+                    List<Card> cards = cardService.findAllByWorkerIdWithWhere(status, type, worker.getId());
+
+                    amountOfCards+=cards.size();
+                    WorkerDTO workerDTO = WorkerDTO.createWorkerDTO(worker, cards);
+                    workerDTOS.add(workerDTO);
+                }
+
+                workerDTOS.sort(Comparator.comparing(o -> (o.getSurname() + " " + o.getName() + " " + o.getPatronymic())));
+
+                DepartmentDTO departmentDTO = DepartmentDTO.createDepartmentDTO(department, workerDTOS, amountOfCards);
+                departmentDTOS.add(departmentDTO);
+            }
         }
 
         departmentDTOS.sort(Comparator.comparing(DepartmentDTO::getName));
