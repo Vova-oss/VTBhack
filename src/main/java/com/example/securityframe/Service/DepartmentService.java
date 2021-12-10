@@ -2,13 +2,10 @@ package com.example.securityframe.Service;
 
 import com.example.securityframe.AuxiliaryClasses.StaticMethods;
 import com.example.securityframe.DAO.DepartmentDAO;
-import com.example.securityframe.DAO.WorkerDAO;
 import com.example.securityframe.Entity.*;
-import com.example.securityframe.ResponseModel.DepartmentsWorkersCards.CardDTO;
 import com.example.securityframe.ResponseModel.DepartmentsWorkersCards.DepartmentDTO;
 import com.example.securityframe.ResponseModel.DepartmentsWorkersCards.WorkerDTO;
 import com.example.securityframe.Security.SService.JWTokenService;
-import liquibase.pro.packaged.W;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,10 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import static com.example.securityframe.AuxiliaryClasses.StaticMethods.parsingJson;
-import static com.example.securityframe.Security.SecurityConstants.HEADER_JWT_STRING;
-import static com.example.securityframe.Security.SecurityConstants.TOKEN_PREFIX;
 
 @Service
 public class DepartmentService {
@@ -97,15 +90,23 @@ public class DepartmentService {
 
     }
 
-    public List<DepartmentDTO> getDepartmentsWorkersCards(HttpServletRequest request, HttpServletResponse response) {
+    public List<DepartmentDTO> getDepartmentsWorkersCards(
+            String worker_name, String type, String status, String department_name,
+            HttpServletRequest request, HttpServletResponse response) {
 
         List<DepartmentDTO> departmentDTOS = new ArrayList<>();
 
-        List<Department> departments = findAllByAccount_id(request, response);
+        if(department_name!=null)
+            department_name="and name like '" + department_name + "'";
+
+        List<Department> departments = findAllByAccount_idWithWhere(department_name, request, response);
         for (Department department: departments){
 
             List<WorkerDTO> workerDTOS = new ArrayList<>();
             long amountOfCards = 0;
+
+            if(worker_name != null)
+                worker_name="and name = '" + worker_name + "'";
 
             List<Worker> workers = workerService.findAllByDepartmentId(department.getId());
             for(Worker worker: workers){
@@ -124,6 +125,13 @@ public class DepartmentService {
 
         departmentDTOS.sort(Comparator.comparing(DepartmentDTO::getName));
         return departmentDTOS;
+    }
+
+    private List<Department> findAllByAccount_idWithWhere(String department_name, HttpServletRequest request, HttpServletResponse response) {
+        Account account = accountService.findByJwt(request);
+        List<Department> list = departmentDAO.findAllByAccount_idWithWhere(department_name, account.getId());
+        list.sort(Comparator.comparing(Department::getId));
+        return list;
     }
 
     public Department findById(Long department_id) {

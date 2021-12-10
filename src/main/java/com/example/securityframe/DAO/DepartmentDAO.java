@@ -201,4 +201,38 @@ public class DepartmentDAO {
         }
         return null;
     }
+
+    public List<Department> findAllByAccount_idWithWhere(String department_name, Long account_id) {
+        String sql = "select * from department where account_id = ? "+department_name;
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, dp_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, account_id);
+            ResultSet r = ps.executeQuery();
+            List<Department> list = new ArrayList<>();
+            while (r.next()){
+                Department department = new Department();
+                department.setId(r.getLong("id"));
+                department.setAccount_id(r.getLong("account_id"));
+                department.setName(r.getString("name"));
+                list.add(department);
+            }
+            return list;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+    }
 }

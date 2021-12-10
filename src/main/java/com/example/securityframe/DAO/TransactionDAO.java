@@ -229,7 +229,8 @@ public class TransactionDAO {
                 "                        join account a on transaction.account_id = a.id\n" +
                 "                        join manager m on a.manager_id = m.id\n" +
                 "               where a.id = ?\n" +
-                "                 and value < 0\n" + where +
+                "                 and value < 0\n" +
+                "and purpose != 'Банковская карта'" + where +
                 "           ) as tsc\n" +
                 "      where purpose like '%'\n" +
                 "  ) as tscTwoCol\n" +
