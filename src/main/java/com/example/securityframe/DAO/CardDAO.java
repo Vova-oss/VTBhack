@@ -462,8 +462,10 @@ public class CardDAO {
         return null;
     }
 
-    public List<Card> findAllByWorkerIdWithWhere(String st, Long worker_id) {
-        String sql = "select distinct * from card c where c.worker_id = ? " + st;
+    public List<Card> findAllByWorkerIdWithWhere(String status, String type, Long worker_id) {
+        String sql = "select distinct * from card c where c.worker_id = ? \n" +
+                "and c.status like ?\n" +
+                "and c.type like ?\n";
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -471,6 +473,8 @@ public class CardDAO {
             con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setLong(1, worker_id);
+            ps.setString(2, status);
+            ps.setString(3, type);
             ResultSet r = ps.executeQuery();
             List<Card> list = new ArrayList<>();
             while (r.next()){

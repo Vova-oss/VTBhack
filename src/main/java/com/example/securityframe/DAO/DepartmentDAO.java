@@ -202,10 +202,15 @@ public class DepartmentDAO {
         return null;
     }
 
-    public List<Department> findAllByAccount_idWithWhere(String department_name, Long account_id) {
+    public List<Department> findAllByAccount_idWithWhere(String status, String type, String worker_name,
+                                                         String dep_name, Long account_id) {
         String sql = "select distinct d.* from department d " +
                 "join worker w on d.id = w.department_id " +
-                "join card c on w.id = c.worker_id where d.account_id = ? "+department_name;
+                "join card c on w.id = c.worker_id where d.account_id = ? " +
+                "and c.status like ?\n" +
+                "and c.type like ?\n" +
+                "and concat(w.name,' ', w.surname, ' ' , w.patronymic) like ?\n" +
+                "and d.name like ?";
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -213,6 +218,10 @@ public class DepartmentDAO {
             con = DriverManager.getConnection(db_url, db_name, dp_pass);
             ps = con.prepareStatement(sql);
             ps.setLong(1, account_id);
+            ps.setString(2, status);
+            ps.setString(3, type);
+            ps.setString(4, worker_name);
+            ps.setString(5, dep_name);
             ResultSet r = ps.executeQuery();
             List<Department> list = new ArrayList<>();
             while (r.next()){

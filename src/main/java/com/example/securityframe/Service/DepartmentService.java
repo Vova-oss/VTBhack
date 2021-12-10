@@ -96,39 +96,45 @@ public class DepartmentService {
 
         List<DepartmentDTO> departmentDTOS = new ArrayList<>();
 
-        String wn;
-        String st;
-        String dn;
+//        String wn;
+//        String st;
+//        String dn;
 
-        if(status != null && type != null)
-            st = "and c.status = '" + status + "' and c.type = '" + type +"'";
-        else if(status != null)
-            st = "and c.status = '" + status + "'";
-        else if(type != null)
-            st = "and c.type = '" + type + "'";
-        else st = "";
+        if(status == null)
+            status = "%";
+        if (worker_name == null)
+            worker_name = "%";
+        else worker_name = "%" + worker_name + "%";
+        if(department_name == null)
+            department_name = "%";
+        if(type == null)
+            type = "%";
 
-        if(worker_name != null)
-            wn ="and concat(w.name,' ', w.surname, ' ' , w.patronymic) like '%" + worker_name + "%' "+ st;
-        else wn = ""+st;
+//        if(status != null && type != null)
+//            st = "and c.status = '" + status + "' and c.type = '" + type +"'";
+//        else if(status != null)
+//            st = "and c.status = '" + status + "'";
+//        else if(type != null)
+//            st = "and c.type = '" + type + "'";
+//        else st = "";
+//
+//        if(worker_name != null)
+//            wn ="and concat(w.name,' ', w.surname, ' ' , w.patronymic) like '%" + worker_name + "%' "+ st;
+//        else wn = ""+st;
+//
+//        if(department_name!=null)
+//            dn="and d.name = '" + department_name + "' "+ wn;
+//        else dn = ""+wn;
 
-        if(department_name!=null)
-            dn="and d.name = '" + department_name + "' "+ wn;
-        else dn = ""+wn;
-
-
-
-
-
-        List<Department> departments = findAllByAccount_idWithWhere(dn, request, response);
+        List<Department> departments = findAllByAccount_idWithWhere(status, type, worker_name, department_name, request, response);
         for (Department department: departments){
 
             List<WorkerDTO> workerDTOS = new ArrayList<>();
             long amountOfCards = 0;
 
-            List<Worker> workers = workerService.findAllByDepartmentIdWithWhere(wn, department.getId());
+            List<Worker> workers = workerService.findAllByDepartmentIdWithWhere(status, type, worker_name, department.getId());
             for(Worker worker: workers){
-                List<Card> cards = cardService.findAllByWorkerIdWithWhere(st, worker.getId());
+                List<Card> cards = cardService.findAllByWorkerIdWithWhere(status, type, worker.getId());
 
                 amountOfCards+=cards.size();
                 WorkerDTO workerDTO = WorkerDTO.createWorkerDTO(worker, cards);
@@ -145,9 +151,10 @@ public class DepartmentService {
         return departmentDTOS;
     }
 
-    private List<Department> findAllByAccount_idWithWhere(String department_name, HttpServletRequest request, HttpServletResponse response) {
+    private List<Department> findAllByAccount_idWithWhere(String status, String type, String worker_name,
+                                                          String dep_name, HttpServletRequest request, HttpServletResponse response) {
         Account account = accountService.findByJwt(request);
-        List<Department> list = departmentDAO.findAllByAccount_idWithWhere(department_name, account.getId());
+        List<Department> list = departmentDAO.findAllByAccount_idWithWhere(status, type, worker_name, dep_name, account.getId());
         list.sort(Comparator.comparing(Department::getId));
         return list;
     }

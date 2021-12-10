@@ -210,9 +210,12 @@ public class WorkerDAO {
         return null;
     }
 
-    public List<Worker> findAllByDepartmentIdWithWhere(String worker_name, Long department_id) {
+    public List<Worker> findAllByDepartmentIdWithWhere(String status, String type, String worker_name, Long department_id) {
         String sql = "select distinct w.* from worker w " +
-                "join card c on w.id = c.worker_id where w.department_id = ? "+worker_name;
+                "join card c on w.id = c.worker_id where w.department_id = ? \n" +
+                "and c.status like ?\n" +
+                "and c.type like ?\n" +
+                "and concat(w.name,' ', w.surname, ' ' , w.patronymic) like ?\n";
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -220,6 +223,10 @@ public class WorkerDAO {
             con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setLong(1, department_id);
+            ps.setString(2, status);
+            ps.setString(3, type);
+            ps.setString(4, worker_name);
+
             ResultSet r = ps.executeQuery();
             List<Worker> list = new ArrayList<>();
             while (r.next()){

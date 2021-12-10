@@ -83,7 +83,7 @@ public class WorkerService {
         return workerDAO.amountOfWorkersByAccountId(account_id);
     }
 
-    public List<Worker> findAllByDepartmentIdWithWhere(String worker_name, Long department_id) {
-        return workerDAO.findAllByDepartmentIdWithWhere(worker_name, department_id);
+    public List<Worker> findAllByDepartmentIdWithWhere(String status, String type, String worker_name, Long department_id) {
+        return workerDAO.findAllByDepartmentIdWithWhere(status, type, worker_name, department_id);
     }
 }

@@ -153,7 +153,7 @@ public class CardService {
         return cards.stream().map(Card::getType).collect(Collectors.toList());
     }
 
-    public List<Card> findAllByWorkerIdWithWhere(String st, Long worker_id) {
-        return cardDAO.findAllByWorkerIdWithWhere(st, worker_id);
+    public List<Card> findAllByWorkerIdWithWhere(String status, String type, Long worker_id) {
+        return cardDAO.findAllByWorkerIdWithWhere(status, type, worker_id);
     }
 }
