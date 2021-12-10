@@ -35,27 +35,54 @@ public class TransactionService {
             HttpServletRequest request, HttpServletResponse response) {
         Account account = accountService.findByJwt(request);
 
-        String where = "";
+        Long valueFrom = Long.MIN_VALUE;
+        Long valueTo = Long.MAX_VALUE;
 
-        if(from != null)
-            where+="\nand date >= '" + from + "'";
+        if(from == null && to == null)
+            from = new Date(System.currentTimeMillis() - 86_400_000 * 7);
+        else if (from == null)
+            from = new Date(to.getTime() - 86_400_000 * 7);
 
-        if(to != null)
-            where+="\nand date <= '" + to +"'";
-        else where+="\nand date + time <= now()";
+        if(to == null)
+            to = new Date(System.currentTimeMillis());
 
-        if(refillOrExpenses != null && refillOrExpenses.equals("expenses"))
-            where+="\nand value < 0";
-        else if(refillOrExpenses != null && refillOrExpenses.equals("refill"))
-            where+="\nand value > 0";
+        if(purpose == null)
+            purpose = "%";
 
-        if(purpose != null)
-            where+="\nand purpose = '" + purpose + "'";
+        if(whatWasSpentOn == null)
+            whatWasSpentOn = "%";
+        else whatWasSpentOn = "%" + whatWasSpentOn + "%";
 
-        if(whatWasSpentOn != null)
-            where+="\nand category like '%" + whatWasSpentOn + "%'";
+        if(refillOrExpenses != null) {
+            switch (refillOrExpenses){
+                case "refill": valueFrom = 0L; break;
+                case "expenses": valueTo = 0L; break;
+            }
+        }
 
-        List<OneEntry> list = transactionDAO.transactionHistory(where, page, account.getId());
+
+
+//        if(from != null)
+//            where+="\nand date >= '" + from + "'";
+//
+//        if(to != null)
+//            where+="\nand date <= '" + to +"'";
+//        else where+="\nand date + time <= now()";
+
+//        if(refillOrExpenses != null && refillOrExpenses.equals("expenses"))
+//            where+="\nand value < 0";
+//        else if(refillOrExpenses != null && refillOrExpenses.equals("refill"))
+//            where+="\nand value > 0";
+
+//        if(purpose != null)
+//            where+="\nand purpose = '" + purpose + "'";
+//
+//        if(whatWasSpentOn != null)
+//            where+="\nand category like '%" + whatWasSpentOn + "%'";
+
+        List<OneEntry> list = transactionDAO.transactionHistory(
+                from, to, purpose, whatWasSpentOn, valueFrom, valueTo, page, account.getId());
+
         List<OneGroupByDate> finallyList = new ArrayList<>();
         OneGroupByDate oneGroupByDate = null;
 

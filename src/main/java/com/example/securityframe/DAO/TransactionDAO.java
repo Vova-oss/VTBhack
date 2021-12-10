@@ -58,7 +58,8 @@ public class TransactionDAO {
         }
     }
 
-    public List<OneEntry> transactionHistory(String where, String page, Long account_id) {
+    public List<OneEntry> transactionHistory(Date from, Date to, String typeOfCard, String purpose, Long valueFrom,
+                                             Long valueTo, String page, Long account_id) {
         String sql = "select * from\n" +
                 "(select\n" +
                 "        to_char(date, 'DD.MM.YY') datet\n" +
@@ -76,7 +77,12 @@ public class TransactionDAO {
                 "    join worker w on c.worker_id = w.id\n" +
                 "    join department d on w.department_id = d.id\n" +
                 "where d.account_id = ?\n" +
-                where+
+                "       and date >= ?\n" +
+                "       and date <= ?\n" +
+                "       and c.type like ?\n" +
+                "       and purpose like ?\n" +
+                "       and value < ?\n" +
+                "       and value > ?\n" +
                 "\n" +
                 "\n" +
                 "union all\n" +
@@ -95,7 +101,13 @@ public class TransactionDAO {
                 "    join account a on transaction.account_id = a.id\n" +
                 "    join manager m on a.manager_id = m.id\n" +
                 "where a.id = ?\n" +
-                where+
+                "       and date >= ?\n" +
+                "       and date <= ?\n" +
+                "       and 'Счёт' like ?\n" +
+                "       and purpose like ?\n" +
+                "       and purpose != 'Банковская карта'\n" +
+                "       and value < ?\n" +
+                "       and value > ?\n" +
                 ") " +
                 "as big_table\n" +
                 "\n" +
@@ -109,8 +121,20 @@ public class TransactionDAO {
             con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setLong(1, account_id);
-            ps.setLong(2, account_id);
-            ps.setLong(3, Long.parseLong(page));
+            ps.setDate(2, from);
+            ps.setDate(3, to);
+            ps.setString(4, typeOfCard);
+            ps.setString(5, purpose);
+            ps.setLong(6, valueTo);
+            ps.setLong(7, valueFrom);
+            ps.setLong(8, account_id);
+            ps.setDate(9, from);
+            ps.setDate(10, to);
+            ps.setString(11, typeOfCard);
+            ps.setString(12, purpose);
+            ps.setLong(13, valueTo);
+            ps.setLong(14, valueFrom);
+            ps.setLong(15, Long.parseLong(page));
             ResultSet r = ps.executeQuery();
             List<OneEntry> list = new ArrayList<>();
             while (r.next()){
