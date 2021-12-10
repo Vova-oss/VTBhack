@@ -196,25 +196,37 @@ public class TransactionService {
 
         Account account = accountService.findByJwt(request);
 
-        String where = "";
+//        String where = "";
 
-        if(from != null)
-            where+="\nand date >= '" + from + "'";
-        else if(to!=null)
-            where+="\nand date >= date('"+to+"')-integer'7'";
-        else where+="\nand date >= date(now())-integer'7'";
+        if(from == null && to == null)
+            from = new Date(System.currentTimeMillis() - 86_400_000 * 7);
+        else if (from == null)
+            from = new Date(to.getTime() - 86_400_000 * 7);
+        if(to == null)
+            to = new Date(System.currentTimeMillis());
+        if(purpose == null)
+            purpose = "%";
+        if(whatWasSpentOn == null)
+            whatWasSpentOn = "%";
+        else whatWasSpentOn = "%" + whatWasSpentOn + "%";
 
-        if(to != null)
-            where+="\nand date <= '" + to +"'";
-        else where+="\nand date + time <= now()";
+//        if(from != null)
+//            where+="\nand date >= '" + from + "'";
+//        else if(to!=null)
+//            where+="\nand date >= date('"+to+"')-integer'7'";
+//        else where+="\nand date >= date(now())-integer'7'";
+//
+//        if(to != null)
+//            where+="\nand date <= '" + to +"'";
+//        else where+="\nand date + time <= now()";
+//
+//        if(purpose != null)
+//            where+="\nand type = '" + purpose + "'";
+//
+//        if(whatWasSpentOn != null)
+//            where+="\nand purpose like '%" + whatWasSpentOn + "%'";
 
-        if(purpose != null)
-            where+="\nand type = '" + purpose + "'";
-
-        if(whatWasSpentOn != null)
-            where+="\nand purpose like '%" + whatWasSpentOn + "%'";
-
-        List<OneDay> list = transactionDAO.expenseSchedule(where, account.getId());
+        List<OneDay> list = transactionDAO.expenseSchedule(from, to, purpose, whatWasSpentOn, account.getId());
 
         return list;
 
