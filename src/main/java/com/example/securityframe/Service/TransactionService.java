@@ -95,10 +95,10 @@ public class TransactionService {
             where+="\nand value > 0";
 
         if(purpose != null)
-            where+="\nand purpose = '" + purpose + "'";
+            where+="\nand type = '" + purpose + "'";
 
         if(whatWasSpentOn != null)
-            where+="\nand category like '%" + whatWasSpentOn + "%'";
+            where+="\nand purpose like '%" + whatWasSpentOn + "%'";
 
         List<OneEntry> list = transactionDAO.transactionHistoryByWorkerId(where, page, worker_id);
         List<OneGroupByDate> finallyList = new ArrayList<>();
@@ -138,10 +138,10 @@ public class TransactionService {
         else where+="\nand date + time <= now()";
 
         if(purpose != null)
-            where+="\nwhere purpose = '" + purpose + "'";
+            where+="\nwhere type = '" + purpose + "'";
 
         if(whatWasSpentOn != null)
-            where+="\nand category like '%" + whatWasSpentOn + "%'";
+            where+="\nand purpose like '%" + whatWasSpentOn + "%'";
 
         List<OneCategory> list = transactionDAO.topSpendingCategories(where, account.getId());
 
@@ -169,10 +169,10 @@ public class TransactionService {
         else where+="\nand date + time <= now()";
 
         if(purpose != null)
-            where+="\nwhere purpose = '" + purpose + "'";
+            where+="\nwhere type = '" + purpose + "'";
 
         if(whatWasSpentOn != null)
-            where+="\nand category like '%" + whatWasSpentOn + "%'";
+            where+="\nand purpose like '%" + whatWasSpentOn + "%'";
 
         List<OneCategory> list = transactionDAO.topSpendingCategoriesByWorker(where, worker_id);
 
@@ -209,10 +209,10 @@ public class TransactionService {
         else where+="\nand date + time <= now()";
 
         if(purpose != null)
-            where+="\nwhere purpose = '" + purpose + "'";
+            where+="\nwhere type = '" + purpose + "'";
 
         if(whatWasSpentOn != null)
-            where+="\nand category like '%" + whatWasSpentOn + "%'";
+            where+="\nand purpose like '%" + whatWasSpentOn + "%'";
 
         List<OneDay> list = transactionDAO.expenseSchedule(where, account.getId());
 
