@@ -308,25 +308,21 @@ public class TransactionDAO {
         return null;
     }
 
-    public List<OneCategory> topSpendingCategoriesByWorker(String where, Long worker_id) {
+    public List<OneCategory> topSpendingCategoriesByWorker(Date from, Date to, String typeOfCard, String purpose, Long worker_id) {
 
-        String sql = "select SUM(val), category\n" +
-                "from (\n" +
-                "         select *\n" +
-                "         from (\n" +
-                "                  select category,\n" +
-                "                         value * (-1) val,\n" +
-                "                         purpose\n" +
-                "                  from transaction\n" +
-                "                           join card c on transaction.card_id = c.id\n" +
-                "                           join worker w on c.worker_id = w.id\n" +
-                "                           join department d on w.department_id = d.id\n" +
-                "                  where w.id = ?\n" +
-                "                    and value < 0\n" + where +
-                "              ) as tsc\n" +
-                "         where purpose like '%'\n" +
-                "     ) as tscTwoCol\n" +
-                "group by category";
+        String sql = "select category,\n" +
+                "     SUM(value * (-1)) val\n" +
+                "from transaction\n" +
+                "       join card c on transaction.card_id = c.id\n" +
+                "       join worker w on c.worker_id = w.id\n" +
+                "       join department d on w.department_id = d.id\n" +
+                "where w.id = ?\n" +
+                "and value < 0\n" +
+                "and date >= ?\n" +
+                "and date <= ?\n" +
+                "and type like ?\n" +
+                "and purpose like ?\n" +
+                "group by category;";
 
 
         Connection con = null;
@@ -335,12 +331,16 @@ public class TransactionDAO {
             con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setLong(1, worker_id);
+            ps.setDate(2, from);
+            ps.setDate(3, to);
+            ps.setString(4, typeOfCard);
+            ps.setString(5, purpose);
             ResultSet r = ps.executeQuery();
             List<OneCategory> list = new ArrayList<>();
             while (r.next()){
                 OneCategory oneCategory = new OneCategory();
                 oneCategory.setCategory(r.getString("category"));
-                oneCategory.setSum(r.getString("sum"));
+                oneCategory.setSum(r.getString("val"));
                 list.add(oneCategory);
             }
             return list;
