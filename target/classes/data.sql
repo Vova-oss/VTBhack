@@ -46,7 +46,7 @@ update card set remains = 200 where id = 1;
 -------------------- transactionHistory ---------------------------------------------------------------------------------
 select * from
 (select
-        date
+        to_char(date, 'DD.MM.YY')
         , time
         , purpose
         , concat(w.surname, ' ', substring(w.name from 1 for 1), '. ', substring(w.patronymic from 1 for 1),'.' ) as fio

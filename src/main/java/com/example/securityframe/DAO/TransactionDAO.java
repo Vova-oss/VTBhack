@@ -61,7 +61,7 @@ public class TransactionDAO {
     public List<OneEntry> transactionHistory(String where, String page, Long account_id) {
         String sql = "select * from\n" +
                 "(select\n" +
-                "        date\n" +
+                "        to_char(date, 'DD.MM.YY') datet\n" +
                 "        , time\n" +
                 "        , purpose\n" +
                 "        , concat(w.surname, ' ', substring(w.name from 1 for 1), '. ', substring(w.patronymic from 1 for 1),'.' ) as fio\n" +
@@ -81,7 +81,7 @@ public class TransactionDAO {
                 "\n" +
                 "union all\n" +
                 "select\n" +
-                "        date\n" +
+                "        to_char(date, 'DD.MM.YY')\n" +
                 "        , time\n" +
                 "        , purpose\n" +
                 "        , concat(m.surname, ' ', substring(m.name from 1 for 1), '. ', substring(m.patronymic from 1 for 1), '.')\n" +
@@ -99,7 +99,7 @@ public class TransactionDAO {
                 ") " +
                 "as big_table\n" +
                 "\n" +
-                "order by date, time\n" +
+                "order by datet, time\n" +
                 "limit 10 offset 10*?;";
 
 
@@ -115,7 +115,7 @@ public class TransactionDAO {
             List<OneEntry> list = new ArrayList<>();
             while (r.next()){
                 OneEntry oneEntry = new OneEntry();
-                oneEntry.setDate(r.getString("date"));
+                oneEntry.setDate(r.getString("datet"));
                 oneEntry.setTime(r.getString("time").substring(0,5));
                 oneEntry.setPurpose(r.getString("purpose"));
                 oneEntry.setFio(r.getString("fio"));
@@ -146,7 +146,7 @@ public class TransactionDAO {
     public List<OneEntry> transactionHistoryByWorkerId(String where, String page, Long worker_id) {
 
         String sql = "select\n" +
-                "    date\n" +
+                "    to_char(date, 'DD.MM.YY') datet\n" +
                 "     , time\n" +
                 "     , purpose\n" +
                 "     , concat(w.surname, ' ', substring(w.name from 1 for 1), '. ', substring(w.patronymic from 1 for 1),'.' ) as fio\n" +
@@ -162,7 +162,7 @@ public class TransactionDAO {
                 "         join department d on w.department_id = d.id\n" +
                 "where w.id = ?\n" +
                 where +
-                "order by date, time\n" +
+                "order by datet, time\n" +
                 "limit 10 offset 10*?";
 
 
@@ -177,7 +177,7 @@ public class TransactionDAO {
             List<OneEntry> list = new ArrayList<>();
             while (r.next()){
                 OneEntry oneEntry = new OneEntry();
-                oneEntry.setDate(r.getString("date"));
+                oneEntry.setDate(r.getString("datet"));
                 oneEntry.setTime(r.getString("time").substring(0,5));
                 oneEntry.setPurpose(r.getString("purpose"));
                 oneEntry.setFio(r.getString("fio"));
@@ -364,9 +364,9 @@ public class TransactionDAO {
 
     public List<OneDay> expenseSchedule(String where, Long id) {
 
-        String sql = "select SUM(val), date\n" +
+        String sql = "select SUM(val), datet\n" +
                 "from (\n" +
-                "      select date,\n" +
+                "      select to_char(date, 'DD.MM.YY') datet,\n" +
                 "             transaction.value * (-1) val,\n" +
                 "             purpose\n" +
                 "      from transaction\n" +
@@ -377,7 +377,7 @@ public class TransactionDAO {
                 "        and value < 0\n" + where+
                 "\n" +
                 "      union all\n" +
-                "      select transaction.date,\n" +
+                "      select to_char(date, 'DD.MM.YY'),\n" +
                 "             transaction.value * (-1),\n" +
                 "             purpose\n" +
                 "      from transaction\n" +
@@ -388,8 +388,8 @@ public class TransactionDAO {
                 "       and purpose != 'Банковская карта'" + where +
                 "  ) as tsc\n" +
                 "\n" +
-                "group by date\n" +
-                "order by date;";
+                "group by datet\n" +
+                "order by datet;";
 
 
         Connection con = null;
@@ -403,7 +403,7 @@ public class TransactionDAO {
             List<OneDay> list = new ArrayList<>();
             while (r.next()){
                 OneDay oneDay = new OneDay();
-                oneDay.setDate(r.getString("date"));
+                oneDay.setDate(r.getString("datet"));
                 oneDay.setAmount(r.getString("sum"));
                 list.add(oneDay);
             }
