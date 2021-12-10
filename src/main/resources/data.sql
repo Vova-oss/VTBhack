@@ -224,3 +224,35 @@ from (
 
 group by date
 order by date;
+
+
+
+------------------------- expensesShuduled ----------------------
+
+select SUM(val), date
+from (
+         select date,
+                transaction.value * (-1) val,
+                purpose
+         from transaction
+                  join card c on transaction.card_id = c.id
+                  join worker w on c.worker_id = w.id
+                  join department d on w.department_id = d.id
+         where d.account_id = 1
+           and value < 0
+
+         union all
+         select transaction.date,
+             transaction.value * (-1),
+             purpose
+         from transaction
+             join account a on transaction.account_id = a.id
+             join manager m on a.manager_id = m.id
+         where a.id = ?
+           and value < 0
+            and purpose != 'Банковская карта'
+               ) as tsc
+
+group by date
+order by date
+

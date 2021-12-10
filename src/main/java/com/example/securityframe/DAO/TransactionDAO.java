@@ -69,7 +69,7 @@ public class TransactionDAO {
                 "        , c.type\n" +
                 "        , c.payment_system\n" +
                 "        , c.card_number\n" +
-                "        , value\n" +
+                "        , transaction.value\n" +
                 "        , c.currency\n" +
                 "    from transaction\n" +
                 "    join card c on transaction.card_id = c.id\n" +
@@ -89,7 +89,7 @@ public class TransactionDAO {
                 "        , 'Пополнение карты'\n" +
                 "        , 'Счёт'\n" +
                 "        , a.account_number\n" +
-                "        , value\n" +
+                "        , transaction.value\n" +
                 "        , a.currency\n" +
                 "    from transaction\n" +
                 "    join account a on transaction.account_id = a.id\n" +
@@ -154,7 +154,7 @@ public class TransactionDAO {
                 "     , c.type\n" +
                 "     , c.payment_system\n" +
                 "     , c.card_number\n" +
-                "     , value\n" +
+                "     , transaction.value\n" +
                 "     , c.currency\n" +
                 "from transaction\n" +
                 "         join card c on transaction.card_id = c.id\n" +
@@ -269,12 +269,12 @@ public class TransactionDAO {
 
     public List<OneCategory> topSpendingCategoriesByWorker(String where, Long worker_id) {
 
-        String sql = "select SUM(value), category\n" +
+        String sql = "select SUM(val), category\n" +
                 "from (\n" +
                 "         select *\n" +
                 "         from (\n" +
                 "                  select category,\n" +
-                "                         value * (-1) value,\n" +
+                "                         value * (-1) val,\n" +
                 "                         purpose\n" +
                 "                  from transaction\n" +
                 "                           join card c on transaction.card_id = c.id\n" +
@@ -321,7 +321,7 @@ public class TransactionDAO {
 
     public Long findMonthlyExpensesByAccountId(Long id) {
 
-        String sql = "select SUM(t.value) * (-1) value\n" +
+        String sql = "select SUM(t.value) * (-1) val\n" +
                 "    from transaction t\n" +
                 "join card c on c.id = t.card_id\n" +
                 "join worker w on c.worker_id = w.id\n" +
@@ -343,7 +343,7 @@ public class TransactionDAO {
             ResultSet r = ps.executeQuery();
             List<OneCategory> list = new ArrayList<>();
             if (r.next())
-                return r.getLong("value");
+                return r.getLong("val");
 
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -383,7 +383,8 @@ public class TransactionDAO {
                 "               join account a on transaction.account_id = a.id\n" +
                 "               join manager m on a.manager_id = m.id\n" +
                 "      where a.id = ?\n" +
-                "        and value < 0\n" + where +
+                "        and value < 0\n" +
+                "       and purpose != 'Банковская карта'" + where +
                 "  ) as tsc\n" +
                 "\n" +
                 "group by date\n" +

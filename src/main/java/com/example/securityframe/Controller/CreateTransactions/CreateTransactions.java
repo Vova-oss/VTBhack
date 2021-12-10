@@ -125,7 +125,7 @@ public class CreateTransactions {
             transaction.setDate(date);
 
             for (int i = 0; i < 3; i++) {
-                if(Math.random()*2 > 1) {
+//                if(Math.random()*2 > 1) {
                     transaction.setCard_id(i + 1L);
                     if(Math.random()*2>1.2){
                         transaction.setPurpose("");
@@ -143,7 +143,7 @@ public class CreateTransactions {
                             createTransaction(transaction);
                         }
                     }
-                }
+//                }
             }
         }
 
