@@ -128,22 +128,35 @@ public class TransactionService {
 
         Account account = accountService.findByJwt(request);
 
-        String where = "";
+//        String where = "";
 
-        if(from != null)
-            where+="\nand date >= '" + from + "'";
+        if(from == null && to == null)
+            from = new Date(System.currentTimeMillis() - 86_400_000 * 7);
+        else if (from == null)
+            from = new Date(to.getTime() - 86_400_000 * 7);
+        if(to == null)
+            to = new Date(System.currentTimeMillis());
+        if(purpose == null)
+            purpose = "%";
+        if(whatWasSpentOn == null)
+            whatWasSpentOn = "%";
+        else whatWasSpentOn = "%" + whatWasSpentOn + "%";
 
-        if(to != null)
-            where+="\nand date <= '" + to +"'";
-        else where+="\nand date + time <= now()";
 
-        if(purpose != null)
-            where+="\nand type = '" + purpose + "'";
+//        if(from != null)
+//            where+="\nand date >= '" + from + "'";
+//
+//        if(to != null)
+//            where+="\nand date <= '" + to +"'";
+//        else where+="\nand date + time <= now()";
+//
+//        if(purpose != null)
+//            where+="\nand type = '" + purpose + "'";
+//
+//        if(whatWasSpentOn != null)
+//            where+="\nand purpose like '%" + whatWasSpentOn + "%'";
 
-        if(whatWasSpentOn != null)
-            where+="\nand purpose like '%" + whatWasSpentOn + "%'";
-
-        List<OneCategory> list = transactionDAO.topSpendingCategories(where, account.getId());
+        List<OneCategory> list = transactionDAO.topSpendingCategories(from, to, purpose, whatWasSpentOn, account.getId());
 
         Long sum = 0L;
         for(OneCategory oneCategory: list){

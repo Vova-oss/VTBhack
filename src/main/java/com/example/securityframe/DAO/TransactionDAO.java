@@ -205,7 +205,7 @@ public class TransactionDAO {
         return null;
     }
 
-    public List<OneCategory> topSpendingCategories(String where, Long id) {
+    public List<OneCategory> topSpendingCategories(Date from, Date to, String typeOfCard, String purpose, Long id) {
         String sql = "select SUM(val), category\n" +
                 "from (\n" +
                 "      select *\n" +
@@ -218,7 +218,11 @@ public class TransactionDAO {
                 "                        join worker w on c.worker_id = w.id\n" +
                 "                        join department d on w.department_id = d.id\n" +
                 "               where d.account_id = ?\n" +
-                "                 and value < 0\n" + where +
+                "                 and value < 0\n" +
+                "       and date >= ?\n" +
+                "       and date <= ?\n" +
+                "       and c.type like ?\n" +
+                "       and purpose like ?\n" +
                 "\n" +
                 "\n" +
                 "               union all\n" +
@@ -230,7 +234,11 @@ public class TransactionDAO {
                 "                        join manager m on a.manager_id = m.id\n" +
                 "               where a.id = ?\n" +
                 "                 and value < 0\n" +
-                "and purpose != 'Банковская карта'\n" + where +
+                "       and date >= ?\n" +
+                "       and date <= ?\n" +
+                "       and 'Счёт' like ?\n" +
+                "       and purpose like ?\n" +
+                "and purpose != 'Банковская карта'\n" +
                 "           ) as tsc\n" +
                 "      where purpose like '%'\n" +
                 "  ) as tscTwoCol\n" +
@@ -243,7 +251,15 @@ public class TransactionDAO {
             con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setLong(1, id);
-            ps.setLong(2, id);
+            ps.setDate(2, from);
+            ps.setDate(3, to);
+            ps.setString(4, typeOfCard);
+            ps.setString(5, purpose);
+            ps.setLong(6, id);
+            ps.setDate(7, from);
+            ps.setDate(8, to);
+            ps.setString(9, typeOfCard);
+            ps.setString(10, purpose);
             ResultSet r = ps.executeQuery();
             List<OneCategory> list = new ArrayList<>();
             while (r.next()){
