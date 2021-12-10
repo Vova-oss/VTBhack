@@ -167,7 +167,8 @@ public class TransactionDAO {
         return null;
     }
 
-    public List<OneEntry> transactionHistoryByWorkerId(String where, String page, Long worker_id) {
+    public List<OneEntry> transactionHistoryByWorkerId(Date from, Date to, String typeOfCard, String purpose, Long valueFrom,
+                                                       Long valueTo, String page, Long worker_id) {
 
         String sql = "select\n" +
                 "    to_char(date, 'DD.MM.YY') datet\n" +
@@ -185,8 +186,13 @@ public class TransactionDAO {
                 "         join worker w on c.worker_id = w.id\n" +
                 "         join department d on w.department_id = d.id\n" +
                 "where w.id = ?\n" +
-                where +
-                "order by datet, time\n" +
+                "       and date >= ?\n" +
+                "       and date <= ?\n" +
+                "       and c.type like ?\n" +
+                "       and purpose like ?\n" +
+                "       and value < ?\n" +
+                "       and value > ?\n" +
+                "order by datet desc, time desc\n" +
                 "limit 10 offset 10*?";
 
 
@@ -196,7 +202,13 @@ public class TransactionDAO {
             con = DriverManager.getConnection(db_url, db_name, db_pass);
             ps = con.prepareStatement(sql);
             ps.setLong(1, worker_id);
-            ps.setLong(2, Long.parseLong(page));
+            ps.setDate(2, from);
+            ps.setDate(3, to);
+            ps.setString(4, typeOfCard);
+            ps.setString(5, purpose);
+            ps.setLong(6, valueTo);
+            ps.setLong(7, valueFrom);
+            ps.setLong(8, Long.parseLong(page));
             ResultSet r = ps.executeQuery();
             List<OneEntry> list = new ArrayList<>();
             while (r.next()){
