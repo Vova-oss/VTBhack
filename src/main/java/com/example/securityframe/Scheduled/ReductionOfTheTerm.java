@@ -21,7 +21,7 @@ public class ReductionOfTheTerm {
     @Value("${spring.datasource.password}")
     private String db_pass;
 
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void reductionOfTheTerm(){
         decrementTerm();
         autoUpdateOfLimit();
