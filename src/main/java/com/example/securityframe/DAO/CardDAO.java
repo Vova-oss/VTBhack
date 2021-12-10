@@ -416,7 +416,7 @@ public class CardDAO {
     }
 
     public List<Card> findAllByAccountId(Long account_id) {
-        String sql = "select card.* from card\n" +
+        String sql = "select distinct card.* from card\n" +
                 "join worker w on card.worker_id = w.id\n" +
                 "join department d on w.department_id = d.id\n" +
                 "where d.account_id = ?;";
@@ -463,7 +463,7 @@ public class CardDAO {
     }
 
     public List<Card> findAllByWorkerIdWithWhere(String st, Long worker_id) {
-        String sql = "select * from card c where c.worker_id = ? " + st;
+        String sql = "select distinct * from card c where c.worker_id = ? " + st;
 
         Connection con = null;
         PreparedStatement ps = null;
