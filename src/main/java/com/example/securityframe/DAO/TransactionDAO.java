@@ -206,12 +206,12 @@ public class TransactionDAO {
     }
 
     public List<OneCategory> topSpendingCategories(String where, Long id) {
-        String sql = "select SUM(value), category\n" +
+        String sql = "select SUM(val), category\n" +
                 "from (\n" +
                 "      select *\n" +
                 "      from (\n" +
                 "               select category,\n" +
-                "                      value * (-1) value,\n" +
+                "                      transaction.value * (-1) val,\n" +
                 "                      purpose\n" +
                 "               from transaction\n" +
                 "                        join card c on transaction.card_id = c.id\n" +
@@ -223,7 +223,7 @@ public class TransactionDAO {
                 "\n" +
                 "               union all\n" +
                 "               select category,\n" +
-                "                      value * (-1),\n" +
+                "                      transaction.value * (-1),\n" +
                 "                      purpose\n" +
                 "               from transaction\n" +
                 "                        join account a on transaction.account_id = a.id\n" +
