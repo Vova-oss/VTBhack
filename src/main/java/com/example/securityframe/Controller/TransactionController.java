@@ -227,13 +227,51 @@ public class TransactionController {
         return transactionService.expenseSchedule(from, to, purpose, whatWasSpentOn, request, response);
     }
 
-    @ApiOperation(value = "Получение значений для фильтра 'Назначение' для всей кампании")
+    @ApiOperation(value = "Получение графика расходов по сотруднику")
+    @GetMapping("/expenseScheduleByWorker")
+    public List<OneDay> expenseScheduleByWorker(
+            @ApiParam(
+                    name = "from",
+                    value = "Период от (включительно)",
+                    example = "2021-11-29"
+            )
+            @RequestParam(value = "from", required = false) Date from,
+            @ApiParam(
+                    name = "to",
+                    value = "Период до (включительно)",
+                    example = "2021-12-08"
+            )
+            @RequestParam(value = "to", required = false) Date to,
+            @ApiParam(
+                    name = "purpose",
+                    value = "Тип карты (грубо говоря). Синие слова на макете. Это 'Назначение' в фильтре",
+                    example = "Транспорт"
+            )
+            @RequestParam(value = "purpose", required = false) String purpose,
+            @ApiParam(
+                    name = "whatWasSpentOn",
+                    value = "На что было потрачено. Это 'Поиск' в фильтре",
+                    example = "Apple.com"
+            )
+            @RequestParam(value = "whatWasSpentOn", required = false) String whatWasSpentOn,
+            @ApiParam(
+                    name = "worker_id",
+                    value = ":id сотрудника, по которому ищется инфа",
+                    example = "1"
+            )
+            @RequestParam(value = "worker_id") Long worker_id,
+            HttpServletRequest request,
+            HttpServletResponse response){
+        return transactionService.expenseScheduleByWorker(from, to, purpose, whatWasSpentOn, worker_id, request, response);
+    }
+
+    @ApiOperation(value = "Получение типов карт для всей кампании")
     @GetMapping("/getAllTypeOfCards")
     public List<String> getAllTypeOfCards(HttpServletRequest request, HttpServletResponse response){
         return cardService.getAllTypeOfCards(request, response);
     }
 
-    @ApiOperation(value = "Получение значений для фильтра 'Назначение' для одного сотрудника")
+    @ApiOperation(value = "Получение типов карт для одного сотрудника")
     @GetMapping("/getAllTypeOfCardsByWorker")
     public List<String> getAllTypeOfCardsByWorker(
             @ApiParam(

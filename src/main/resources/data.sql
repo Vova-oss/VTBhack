@@ -227,7 +227,7 @@ order by date;
 
 
 
-------------------------- expensesShuduled ----------------------
+------------------------- expenseSchedule ----------------------
 
 select SUM(val), date
 from (
@@ -252,6 +252,20 @@ from (
            and value < 0
             and purpose != 'Банковская карта'
                ) as tsc
+
+group by date
+order by date;
+
+------------------------- expenseScheduleByWorker ----------------------
+
+
+ select date,
+        sum(transaction.value * (-1)) val
+ from transaction
+          join card c on transaction.card_id = c.id
+          join worker w on c.worker_id = w.id
+ where worker_id = 1
+   and value < 0
 
 group by date
 order by date;

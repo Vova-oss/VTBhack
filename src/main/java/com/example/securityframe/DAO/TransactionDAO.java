@@ -477,4 +477,56 @@ public class TransactionDAO {
         return null;
 
     }
+
+    public List<OneDay> expenseScheduleByWorker(Date from, Date to, String typeOfCard, String purpose, Long worker_id) {
+
+        String sql = "select date,\n" +
+                "        sum(transaction.value * (-1)) val\n" +
+                " from transaction\n" +
+                "          join card c on transaction.card_id = c.id\n" +
+                "          join worker w on c.worker_id = w.id\n" +
+                " where worker_id = ?\n" +
+                "   and value < 0\n" +
+                "   and date >= ?\n" +
+                "   and date <= ?\n" +
+                "   and type like ?\n" +
+                "   and purpose like ?\n" +
+                "group by date\n" +
+                "order by date;";
+
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, worker_id);
+            ps.setDate(2, from);
+            ps.setDate(3, to);
+            ps.setString(4, typeOfCard);
+            ps.setString(5, purpose);
+            ResultSet r = ps.executeQuery();
+            List<OneDay> list = new ArrayList<>();
+            while (r.next()){
+                OneDay oneDay = new OneDay();
+                oneDay.setDate(r.getString("date"));
+                oneDay.setAmount(r.getString("val"));
+                list.add(oneDay);
+            }
+            return list;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+
+    }
 }

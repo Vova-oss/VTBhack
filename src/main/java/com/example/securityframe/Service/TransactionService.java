@@ -271,4 +271,24 @@ public class TransactionService {
         return list;
 
     }
+
+    public List<OneDay> expenseScheduleByWorker(Date from, Date to, String purpose, String whatWasSpentOn, Long worker_id, HttpServletRequest request, HttpServletResponse response) {
+
+        if(from == null && to == null)
+            from = new Date(System.currentTimeMillis() - 86_400_000 * 7);
+        else if (from == null)
+            from = new Date(to.getTime() - 86_400_000 * 7);
+        if(to == null)
+            to = new Date(System.currentTimeMillis());
+        if(purpose == null)
+            purpose = "%";
+        if(whatWasSpentOn == null)
+            whatWasSpentOn = "%";
+        else whatWasSpentOn = "%" + whatWasSpentOn + "%";
+
+        List<OneDay> list = transactionDAO.expenseScheduleByWorker(from, to, purpose, whatWasSpentOn, worker_id);
+
+        return list;
+
+    }
 }
