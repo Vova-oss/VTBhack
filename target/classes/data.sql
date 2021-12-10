@@ -254,5 +254,11 @@ from (
                ) as tsc
 
 group by date
-order by date
+order by date;
 
+
+----------------------- CardDAO findAllByAccountId ------------------------------
+select card.* from card
+join worker w on card.worker_id = w.id
+join department d on w.department_id = d.id
+where d.account_id = 1;

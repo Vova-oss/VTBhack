@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CardService {
@@ -142,8 +143,13 @@ public class CardService {
     }
 
     public List<String> getAllTypeOfCards(HttpServletRequest request, HttpServletResponse response) {
+        Account account = accountService.findByJwt(request);
+        List<Card> cards = cardDAO.findAllByAccountId(account.getId());
+        return cards.stream().map(Card::getType).collect(Collectors.toList());
+    }
 
-        return null;
-
+    public List<String> getAllTypeOfCardsByWorker(Long worker_id, HttpServletRequest request, HttpServletResponse response) {
+        List<Card> cards = cardDAO.findAllByWorkerId(worker_id);
+        return cards.stream().map(Card::getType).collect(Collectors.toList());
     }
 }

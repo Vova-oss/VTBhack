@@ -227,9 +227,23 @@ public class TransactionController {
         return transactionService.expenseSchedule(from, to, purpose, whatWasSpentOn, request, response);
     }
 
+    @ApiOperation(value = "Получение значений для фильтра 'Назначение' для всей кампании")
     @GetMapping("/getAllTypeOfCards")
     public List<String> getAllTypeOfCards(HttpServletRequest request, HttpServletResponse response){
         return cardService.getAllTypeOfCards(request, response);
+    }
+
+    @ApiOperation(value = "Получение значений для фильтра 'Назначение' для одного сотрудника")
+    @GetMapping("/getAllTypeOfCardsByWorker")
+    public List<String> getAllTypeOfCardsByWorker(
+            @ApiParam(
+                    name = "worker_id",
+                    value = ":id сотрудника, по которому ищется инфа",
+                    example = "Транспорт"
+            )
+            @RequestParam("worker_id") Long worker_id,
+            HttpServletRequest request, HttpServletResponse response){
+        return cardService.getAllTypeOfCardsByWorker(worker_id, request, response);
     }
 
 }

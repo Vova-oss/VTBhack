@@ -414,4 +414,51 @@ public class CardDAO {
         }
         return null;
     }
+
+    public List<Card> findAllByAccountId(Long account_id) {
+        String sql = "select card.* from card\n" +
+                "join worker w on card.worker_id = w.id\n" +
+                "join department d on w.department_id = d.id\n" +
+                "where d.account_id = ?;";
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, account_id);
+            ResultSet r = ps.executeQuery();
+            List<Card> list = new ArrayList<>();
+            while (r.next()){
+                Card card = new Card();
+                card.setId(r.getLong("id"));
+                card.setWorker_id(r.getLong("worker_id"));
+                card.setPayment_system(r.getString("payment_system"));
+                card.setCard_number(r.getString("card_number"));
+                card.setAccount(r.getLong("account"));
+                card.setType(r.getString("type"));
+                card.setPurpose_of_creation(r.getString("purpose_of_creation"));
+                card.setStatus(r.getString("status"));
+                card.setLimit(r.getLong("limit"));
+                card.setTerm(r.getLong("term"));
+                card.setRemains(r.getLong("remains"));
+                card.setAutoUpdate(r.getBoolean("auto_update"));
+                card.setCurrency(r.getString("currency"));
+                list.add(card);
+            }
+            return list;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+    }
 }
