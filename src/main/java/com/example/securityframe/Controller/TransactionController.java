@@ -3,6 +3,7 @@ package com.example.securityframe.Controller;
 import com.example.securityframe.ResponseModel.ExpenseSchedule.OneDay;
 import com.example.securityframe.ResponseModel.HistoryOfTransactions.OneGroupByDate;
 import com.example.securityframe.ResponseModel.TopSpendingCategories.TopSpendingCategories;
+import com.example.securityframe.Service.CardService;
 import com.example.securityframe.Service.TransactionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,6 +26,8 @@ public class TransactionController {
 
     @Autowired
     TransactionService transactionService;
+    @Autowired
+    CardService cardService;
 
     @ApiOperation(value = "Получение истории транзакций")
     @GetMapping("/transactionHistory")
@@ -222,6 +225,11 @@ public class TransactionController {
             HttpServletRequest request,
             HttpServletResponse response){
         return transactionService.expenseSchedule(from, to, purpose, whatWasSpentOn, request, response);
+    }
+
+    @GetMapping("/getAllTypeOfCards")
+    public List<String> getAllTypeOfCards(HttpServletRequest request, HttpServletResponse response){
+        return cardService.getAllTypeOfCards(request, response);
     }
 
 }

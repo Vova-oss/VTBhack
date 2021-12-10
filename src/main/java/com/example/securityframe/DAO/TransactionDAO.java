@@ -363,10 +363,10 @@ public class TransactionDAO {
 
     public List<OneDay> expenseSchedule(String where, Long id) {
 
-        String sql = "select SUM(value), date\n" +
+        String sql = "select SUM(val), date\n" +
                 "from (\n" +
                 "      select date,\n" +
-                "             value * (-1) value,\n" +
+                "             transaction.value * (-1) val,\n" +
                 "             purpose\n" +
                 "      from transaction\n" +
                 "               join card c on transaction.card_id = c.id\n" +
@@ -376,8 +376,8 @@ public class TransactionDAO {
                 "        and value < 0\n" + where+
                 "\n" +
                 "      union all\n" +
-                "      select date,\n" +
-                "             value * (-1),\n" +
+                "      select transaction.date,\n" +
+                "             transaction.value * (-1),\n" +
                 "             purpose\n" +
                 "      from transaction\n" +
                 "               join account a on transaction.account_id = a.id\n" +

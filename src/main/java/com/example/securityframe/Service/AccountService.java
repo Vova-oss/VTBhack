@@ -44,7 +44,7 @@ public class AccountService {
         if(accountDAO.withdrawalOfFunds(account_id, amount)){
             Transaction transaction = new Transaction();
             transaction.setAccount_id(account_id);
-            transaction.setCategory("Переводы");
+                transaction.setCategory("Переводы");
             transaction.setPurpose("Банковская карта");
             transaction.setValue(-amount);
             transactionService.createTransaction(transaction);

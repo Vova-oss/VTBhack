@@ -154,10 +154,10 @@ public class StartController {
     @ApiOperation(value = "Получение отделов, сотрудников и карт")
     @GetMapping("/getDepartmentsWorkersCards")
     public List<DepartmentDTO> getDepartmentsWorkersCards(
-            @RequestParam("worker_name") String worker_name,
-            @RequestParam("type") String type,
-            @RequestParam("status") String status,
-            @RequestParam("department") String department,
+            @RequestParam(value = "worker_name", required = false) String worker_name,
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "department", required = false) String department,
             HttpServletRequest request,
             HttpServletResponse response){
         return departmentService.getDepartmentsWorkersCards(request, response);

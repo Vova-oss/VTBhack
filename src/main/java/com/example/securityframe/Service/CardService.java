@@ -140,4 +140,10 @@ public class CardService {
     public Long amountOfActiveCardsByAccountId(Long account_id) {
         return cardDAO.amountOfActiveCardsByAccountId(account_id);
     }
+
+    public List<String> getAllTypeOfCards(HttpServletRequest request, HttpServletResponse response) {
+
+        return null;
+
+    }
 }
