@@ -111,7 +111,7 @@ public class TransactionDAO {
                 ") " +
                 "as big_table\n" +
                 "\n" +
-                "order by datet, time\n" +
+                "order by datet desc, time desc\n" +
                 "limit 10 offset 10*?;";
 
 
