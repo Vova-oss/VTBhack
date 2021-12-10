@@ -230,7 +230,7 @@ public class TransactionDAO {
                 "                        join manager m on a.manager_id = m.id\n" +
                 "               where a.id = ?\n" +
                 "                 and value < 0\n" +
-                "and purpose != 'Банковская карта'" + where +
+                "and purpose != 'Банковская карта'\n" + where +
                 "           ) as tsc\n" +
                 "      where purpose like '%'\n" +
                 "  ) as tscTwoCol\n" +
@@ -385,7 +385,7 @@ public class TransactionDAO {
                 "               join manager m on a.manager_id = m.id\n" +
                 "      where a.id = ?\n" +
                 "        and value < 0\n" +
-                "       and purpose != 'Банковская карта'" + where +
+                "       and purpose != 'Банковская карта'\n" + where +
                 "  ) as tsc\n" +
                 "\n" +
                 "group by datet\n" +
