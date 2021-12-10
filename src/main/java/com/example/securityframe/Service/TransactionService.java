@@ -138,7 +138,7 @@ public class TransactionService {
         else where+="\nand date + time <= now()";
 
         if(purpose != null)
-            where+="\nwhere type = '" + purpose + "'";
+            where+="\nand type = '" + purpose + "'";
 
         if(whatWasSpentOn != null)
             where+="\nand purpose like '%" + whatWasSpentOn + "%'";
@@ -169,7 +169,7 @@ public class TransactionService {
         else where+="\nand date + time <= now()";
 
         if(purpose != null)
-            where+="\nwhere type = '" + purpose + "'";
+            where+="\nand type = '" + purpose + "'";
 
         if(whatWasSpentOn != null)
             where+="\nand purpose like '%" + whatWasSpentOn + "%'";
@@ -209,7 +209,7 @@ public class TransactionService {
         else where+="\nand date + time <= now()";
 
         if(purpose != null)
-            where+="\nwhere type = '" + purpose + "'";
+            where+="\nand type = '" + purpose + "'";
 
         if(whatWasSpentOn != null)
             where+="\nand purpose like '%" + whatWasSpentOn + "%'";
