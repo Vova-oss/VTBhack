@@ -262,3 +262,8 @@ select card.* from card
 join worker w on card.worker_id = w.id
 join department d on w.department_id = d.id
 where d.account_id = 1;
+
+
+
+select *, concat(name,' ', surname, ' ' , patronymic)
+from worker where department_id = ? and concat(name,' ', surname, ' ' , patronymic) like 'А'

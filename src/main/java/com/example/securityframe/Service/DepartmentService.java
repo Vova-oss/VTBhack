@@ -96,21 +96,39 @@ public class DepartmentService {
 
         List<DepartmentDTO> departmentDTOS = new ArrayList<>();
 
-        if(department_name!=null)
-            department_name="and name like '" + department_name + "'";
+        String wn;
+        String st;
+        String dn;
 
-        List<Department> departments = findAllByAccount_idWithWhere(department_name, request, response);
+        if(status != null && type != null)
+            st = "and c.status = '" + status + "' and c.type = '" + type +"'";
+        else if(status != null)
+            st = "and c.status = '" + status + "'";
+        else if(type != null)
+            st = "and c.type = '" + type + "'";
+        else st = "";
+
+        if(worker_name != null)
+            wn ="and concat(w.name,' ', w.surname, ' ' , w.patronymic) like '%" + worker_name + "%' "+ st;
+        else wn = ""+st;
+
+        if(department_name!=null)
+            dn="and d.name = '" + department_name + "' "+ wn;
+        else dn = ""+wn;
+
+
+
+
+
+        List<Department> departments = findAllByAccount_idWithWhere(dn, request, response);
         for (Department department: departments){
 
             List<WorkerDTO> workerDTOS = new ArrayList<>();
             long amountOfCards = 0;
 
-            if(worker_name != null)
-                worker_name="and name = '" + worker_name + "'";
-
-            List<Worker> workers = workerService.findAllByDepartmentId(department.getId());
+            List<Worker> workers = workerService.findAllByDepartmentIdWithWhere(wn, department.getId());
             for(Worker worker: workers){
-                List<Card> cards = cardService.findAllByWorkerId(worker.getId());
+                List<Card> cards = cardService.findAllByWorkerIdWithWhere(st, worker.getId());
 
                 amountOfCards+=cards.size();
                 WorkerDTO workerDTO = WorkerDTO.createWorkerDTO(worker, cards);

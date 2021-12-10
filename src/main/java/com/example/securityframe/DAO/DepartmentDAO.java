@@ -203,7 +203,9 @@ public class DepartmentDAO {
     }
 
     public List<Department> findAllByAccount_idWithWhere(String department_name, Long account_id) {
-        String sql = "select * from department where account_id = ? "+department_name;
+        String sql = "select distinct d.* from department d " +
+                "join worker w on d.id = w.department_id " +
+                "join card c on w.id = c.worker_id where d.account_id = ? "+department_name;
 
         Connection con = null;
         PreparedStatement ps = null;

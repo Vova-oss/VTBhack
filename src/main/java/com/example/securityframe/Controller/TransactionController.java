@@ -116,7 +116,7 @@ public class TransactionController {
             @ApiParam(
                     name = "worker_id",
                     value = ":id сотрудника, по которому ищется инфа",
-                    example = "Транспорт"
+                    example = "2"
             )
             @RequestParam(value = "worker_id") Long worker_id,
             HttpServletRequest request,
@@ -187,7 +187,7 @@ public class TransactionController {
             @ApiParam(
                     name = "worker_id",
                     value = ":id сотрудника, по которому ищется инфа",
-                    example = "Транспорт"
+                    example = "1"
             )
             @RequestParam(value = "worker_id") Long worker_id,
             HttpServletRequest request,
@@ -239,7 +239,7 @@ public class TransactionController {
             @ApiParam(
                     name = "worker_id",
                     value = ":id сотрудника, по которому ищется инфа",
-                    example = "Транспорт"
+                    example = "1"
             )
             @RequestParam("worker_id") Long worker_id,
             HttpServletRequest request, HttpServletResponse response){

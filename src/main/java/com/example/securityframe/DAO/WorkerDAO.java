@@ -209,4 +209,41 @@ public class WorkerDAO {
         }
         return null;
     }
+
+    public List<Worker> findAllByDepartmentIdWithWhere(String worker_name, Long department_id) {
+        String sql = "select distinct w.* from worker w " +
+                "join card c on w.id = c.worker_id where w.department_id = ? "+worker_name;
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DriverManager.getConnection(db_url, db_name, db_pass);
+            ps = con.prepareStatement(sql);
+            ps.setLong(1, department_id);
+            ResultSet r = ps.executeQuery();
+            List<Worker> list = new ArrayList<>();
+            while (r.next()){
+                Worker worker = new Worker();
+                worker.setId(r.getLong("id"));
+                worker.setName(r.getString("name"));
+                worker.setSurname(r.getString("surname"));
+                worker.setPatronymic(r.getString("patronymic"));
+                worker.setDepartment_id(r.getLong("department_id"));
+                list.add(worker);
+            }
+            return list;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try {
+                if(con != null)
+                    con.close();
+                if(ps != null)
+                    ps.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+    }
 }
