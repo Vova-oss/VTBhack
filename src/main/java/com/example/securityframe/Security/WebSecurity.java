@@ -34,6 +34,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter implements WebMvcC
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+    
+
 
 
     protected void configure(HttpSecurity http) throws Exception {
@@ -64,7 +66,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter implements WebMvcC
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
+                .allowedOrigins("*")
                 .allowedMethods("*");
     }
 

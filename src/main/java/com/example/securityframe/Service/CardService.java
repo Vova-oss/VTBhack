@@ -145,7 +145,7 @@ public class CardService {
     public List<String> getAllTypeOfCards(HttpServletRequest request, HttpServletResponse response) {
         Account account = accountService.findByJwt(request);
         List<Card> cards = cardDAO.findAllByAccountId(account.getId());
-        return cards.stream().map(Card::getType).collect(Collectors.toList());
+        return cards.stream().map(Card::getType).distinct().collect(Collectors.toList());
     }
 
     public List<String> getAllTypeOfCardsByWorker(Long worker_id, HttpServletRequest request, HttpServletResponse response) {
